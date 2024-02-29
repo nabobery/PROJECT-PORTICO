@@ -1,4 +1,4 @@
-# PROJECT-PROTICO
+# PROJECT-PORTICO
 
 **PORTICO** stands for **P**ortfolio **O**ffering **R**elevant **T**alents, **I**nsights, and **C**reative **O**utput.
 
