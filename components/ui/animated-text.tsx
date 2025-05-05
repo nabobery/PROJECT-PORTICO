@@ -5,7 +5,7 @@ import { motion, useAnimation, useInView } from 'framer-motion'
 
 interface AnimatedTextProps {
     text: string
-    el?: keyof JSX.IntrinsicElements
+    el?: keyof React.JSX.IntrinsicElements
     className?: string
     once?: boolean
     delay?: number
