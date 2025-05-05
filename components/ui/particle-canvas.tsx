@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
-import { animate } from "animejs";
 
 type Particle = {
   x: number;
@@ -60,34 +59,6 @@ export function ParticleCanvas() {
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current.x = e.clientX;
       mouseRef.current.y = e.clientY;
-
-      // Create ripple effect on mouse move
-      createRipple(e.clientX, e.clientY);
-    };
-
-    const createRipple = (x: number, y: number) => {
-      const ripple = document.createElement("div");
-      ripple.classList.add("ripple");
-      ripple.style.position = "fixed";
-      ripple.style.left = `${x}px`;
-      ripple.style.top = `${y}px`;
-      ripple.style.width = "20px";
-      ripple.style.height = "20px";
-      ripple.style.borderRadius = "50%";
-      ripple.style.backgroundColor = "rgba(var(--primary-rgb), 0.3)";
-      ripple.style.pointerEvents = "none";
-      ripple.style.zIndex = "9999";
-      document.body.appendChild(ripple);
-
-      animate(ripple, {
-        scale: [0, 3],
-        opacity: [0.5, 0],
-        easing: "easeOutExpo",
-        duration: 1000,
-        complete: () => {
-          document.body.removeChild(ripple);
-        },
-      });
     };
 
     const drawConnections = (ctx: CanvasRenderingContext2D) => {

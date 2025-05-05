@@ -6,7 +6,7 @@ import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
-("@/components/ui/custom-cursor");
+import { CursorRipple } from "@/components/ui/cursor-ripple";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -52,6 +52,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
+          <CursorRipple />
           <div className="relative flex min-h-screen flex-col">
             <Navbar />
             <main className="flex-1">{children}</main>
