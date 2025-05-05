@@ -1,0 +1,2 @@
+npm run lint --fix # Runs ESLint with auto-fixing
+npx lint-staged # Runs lint-staged, which includes Prettier
