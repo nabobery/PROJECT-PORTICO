@@ -155,25 +155,24 @@ export default function TechRadar() {
                     <Tabs
                         value={activeCategory}
                         onValueChange={setActiveCategory}
-                        orientation="vertical"
-                        className="flex flex-col md:flex-row gap-8"
+                        orientation="horizontal"
+                        className="w-full mb-12"
                     >
-                        <TabsList className="flex flex-row md:flex-col justify-start md:justify-start h-auto md:h-full w-full md:w-1/4 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0">
-                            {skillCategories.map((category) => (
-                                <TabsTrigger
-                                    key={category.name}
-                                    value={category.name}
-                                    className="w-full justify-start px-4 py-3 text-left whitespace-nowrap md:whitespace-normal"
-                                >
-                                    <category.icon className="w-5 h-5 mr-3 shrink-0" />
-                                    <span className="grow">
-                                        {category.name}
-                                    </span>
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
+                        <div className="flex justify-center mb-10">
+                            <TabsList className="inline-flex h-auto items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground flex-wrap gap-1">
+                                {skillCategories.map((category) => (
+                                    <TabsTrigger
+                                        key={category.name}
+                                        value={category.name}
+                                        className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-4 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm hover:bg-muted/80"
+                                    >
+                                        <span>{category.name}</span>
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                        </div>
 
-                        <div className="w-full md:w-3/4">
+                        <div>
                             {skillCategories.map((category) => (
                                 <TabsContent
                                     key={category.name}
