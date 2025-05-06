@@ -69,7 +69,7 @@ export default function About() {
 
                 <div
                     ref={ref}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+                    className="grid grid-cols-1 gap-12 items-center max-w-5xl mx-auto"
                 >
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
@@ -79,15 +79,15 @@ export default function About() {
                                 : { opacity: 0, x: -50 }
                         }
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="space-y-6"
+                        className="space-y-6 max-w-sm mx-auto"
                     >
                         <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/10 to-primary/30 p-1">
                             <div className="absolute inset-0 bg-grid-pattern opacity-10" />
                             <Image
-                                src="https://images.pexels.com/photos/4974915/pexels-photo-4974915.jpeg"
+                                src="./developer-portrait.jpeg"
                                 alt="Developer portrait"
-                                width={600}
-                                height={600}
+                                width={400}
+                                height={400}
                                 className="rounded-lg w-full h-auto object-cover"
                             />
                         </div>
