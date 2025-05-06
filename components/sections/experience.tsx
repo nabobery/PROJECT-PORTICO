@@ -96,12 +96,17 @@ export default function Experience() {
                 </div>
 
                 <div ref={ref} className="relative max-w-3xl mx-auto">
-                    {/* Timeline Line */}
-                    <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-border transform md:translate-x-px" />
+                    {/* Animated Timeline Line */}
+                    <motion.div
+                        className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-border origin-top transform md:translate-x-px"
+                        initial={{ scaleY: 0 }}
+                        animate={isInView ? { scaleY: 1 } : { scaleY: 0 }}
+                        transition={{ duration: 0.8, ease: 'easeOut' }}
+                    />
 
                     {experiences.map((experience, index) => (
                         <motion.div
-                            key={index}
+                            key={`${experience.company}-${experience.role}-${index}`}
                             initial={{ opacity: 0, y: 50 }}
                             animate={
                                 isInView
@@ -110,88 +115,125 @@ export default function Experience() {
                             }
                             transition={{
                                 duration: 0.5,
-                                delay: 0.2 + index * 0.2,
+                                delay: 0.2 + index * 0.2, // Card animation
                             }}
-                            className={`relative mb-12 md:mb-24 ${
-                                index % 2 === 0
-                                    ? 'md:pl-12'
-                                    : 'md:pr-12 md:ml-auto'
-                            }`}
-                            style={{ maxWidth: '85%' }}
+                            className="relative md:flex md:items-start mb-12 md:mb-24"
                         >
-                            {/* Timeline Circle */}
-                            <div
-                                className="absolute left-0 md:left-1/2 top-6 w-4 h-4 rounded-full bg-primary -ml-2 md:-ml-2"
-                                style={{
-                                    transform: 'translateX(-4px)',
-                                    [index % 2 === 0
-                                        ? 'marginLeft'
-                                        : 'marginRight']: 0,
+                            {/* Animated Glowing Dot */}
+                            <motion.div
+                                className="absolute left-0 top-6 w-4 h-4 rounded-full bg-primary -ml-2 md:left-1/2 md:-ml-2 z-10"
+                                initial={{
+                                    opacity: 0,
+                                    scale: 0.5,
+                                    boxShadow:
+                                        '0 0 0px 0px rgba(59, 130, 246, 0)', // Assuming primary is blue-500. Adjust RGBA if your primary color is different.
+                                }}
+                                animate={
+                                    isInView
+                                        ? {
+                                              opacity: 1,
+                                              scale: 1,
+                                              boxShadow: [
+                                                  // Keyframes for pulsing glow
+                                                  '0 0 0px 0px rgba(59, 130, 246, 0.4)',
+                                                  '0 0 25px 10px rgba(59, 130, 246, 0.7)',
+                                                  '0 0 0px 0px rgba(59, 130, 246, 0.4)',
+                                              ],
+                                          }
+                                        : {
+                                              opacity: 0,
+                                              scale: 0.5,
+                                              boxShadow:
+                                                  '0 0 0px 0px rgba(59, 130, 246, 0)',
+                                          }
+                                }
+                                transition={{
+                                    opacity: {
+                                        duration: 0.4,
+                                        delay: 0.15 + index * 0.2,
+                                    },
+                                    scale: {
+                                        duration: 0.4,
+                                        delay: 0.15 + index * 0.2,
+                                    },
+                                    boxShadow: {
+                                        duration: 1.5, // Duration for one full pulse
+                                        delay: 0.15 + index * 0.2 + 0.4, // Start after dot appears
+                                        repeat: Infinity, // Loop the pulse
+                                        ease: 'easeInOut',
+                                    },
                                 }}
                             />
 
-                            {/* Period Badge */}
-                            <div
-                                className={`absolute top-5 hidden md:block ${
-                                    index % 2 === 0 ? '-left-32' : '-right-32'
-                                }`}
-                            >
-                                <span className="text-sm font-medium text-muted-foreground">
+                            {/* Date Section (Left Column) */}
+                            <div className="md:w-1/2 md:pr-4 md:text-right md:pt-6">
+                                <div className="hidden md:block text-sm font-medium text-muted-foreground">
                                     {experience.date}
-                                </span>
+                                </div>
                             </div>
 
-                            {/* Experience Card */}
-                            <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg">
-                                <CardContent className="p-6">
-                                    <div className="md:hidden mb-2">
-                                        <span className="text-sm font-medium text-muted-foreground">
-                                            {experience.date}
-                                        </span>
-                                    </div>
+                            {/* Card Section (Right Column) with Hover Effect */}
+                            <motion.div
+                                className="md:w-1/2 md:pl-4"
+                                whileHover={{ y: -6 }} // Lift card on hover
+                                transition={{
+                                    type: 'spring',
+                                    stiffness: 300,
+                                    damping: 15,
+                                }}
+                            >
+                                <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg">
+                                    <CardContent className="p-6">
+                                        {/* Mobile Date Display */}
+                                        <div className="md:hidden mb-2">
+                                            <span className="text-sm font-medium text-muted-foreground">
+                                                {experience.date}
+                                            </span>
+                                        </div>
 
-                                    <h3 className="text-xl font-bold mb-1 group-hover:text-primary transition-colors">
-                                        {experience.role}
-                                    </h3>
+                                        <h3 className="text-xl font-bold mb-1 group-hover:text-primary transition-colors">
+                                            {experience.role}
+                                        </h3>
 
-                                    <p className="text-muted-foreground mb-4">
-                                        {experience.company}
-                                    </p>
+                                        <p className="text-muted-foreground mb-4">
+                                            {experience.company}
+                                        </p>
 
-                                    <p className="mb-4">
-                                        {experience.location}
-                                    </p>
+                                        <p className="mb-4">
+                                            {experience.location}
+                                        </p>
 
-                                    <div className="space-y-2 mb-4">
-                                        <h4 className="text-sm font-semibold">
-                                            Key Achievements:
-                                        </h4>
-                                        <ul className="space-y-2">
-                                            {experience.description.map(
-                                                (achievement, i) => (
-                                                    <li
-                                                        key={i}
-                                                        className="flex items-start gap-2"
-                                                    >
-                                                        <span className="text-primary mt-1">
-                                                            •
-                                                        </span>
-                                                        <span className="text-sm">
-                                                            {achievement}
-                                                        </span>
-                                                    </li>
-                                                )
-                                            )}
-                                        </ul>
-                                    </div>
+                                        <div className="space-y-2 mb-4">
+                                            <h4 className="text-sm font-semibold">
+                                                Key Achievements:
+                                            </h4>
+                                            <ul className="space-y-2">
+                                                {experience.description.map(
+                                                    (achievement, i) => (
+                                                        <li
+                                                            key={i}
+                                                            className="flex items-start gap-2"
+                                                        >
+                                                            <span className="text-primary mt-1">
+                                                                •
+                                                            </span>
+                                                            <span className="text-sm">
+                                                                {achievement}
+                                                            </span>
+                                                        </li>
+                                                    )
+                                                )}
+                                            </ul>
+                                        </div>
 
-                                    <div className="flex flex-wrap gap-2">
-                                        <Badge variant="secondary">
-                                            {experience.icon.name}
-                                        </Badge>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                        <div className="flex flex-wrap gap-2">
+                                            <Badge variant="secondary">
+                                                {experience.icon.name}
+                                            </Badge>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
                         </motion.div>
                     ))}
                 </div>
