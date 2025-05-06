@@ -65,7 +65,7 @@ export default function Hero() {
                             className="text-4xl md:text-6xl lg:text-7xl font-bold font-heading tracking-tight"
                         >
                             Hi, I&apos;m Avinash, <br className="md:hidden" />a{' '}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600 dark:from-blue-400 dark:to-purple-400">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
                                 <span ref={typedRef}></span>
                             </span>
                         </motion.h1>
