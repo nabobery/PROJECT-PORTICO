@@ -154,25 +154,10 @@ export default function Contact() {
                                 <div>
                                     <h4 className="font-medium">Email</h4>
                                     <a
-                                        href="mailto:hello@example.com"
+                                        href="mailto:avinashchangrani99@gmail.com"
                                         className="text-muted-foreground hover:text-primary transition-colors"
                                     >
-                                        hello@example.com
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-4">
-                                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-1">
-                                    <FaPhoneAlt className="h-5 w-5" />
-                                </div>
-                                <div>
-                                    <h4 className="font-medium">Phone</h4>
-                                    <a
-                                        href="tel:+1234567890"
-                                        className="text-muted-foreground hover:text-primary transition-colors"
-                                    >
-                                        +1 (234) 567-890
+                                        avinashchangrani99@gmail.com
                                     </a>
                                 </div>
                             </div>
@@ -184,7 +169,7 @@ export default function Contact() {
                                 <div>
                                     <h4 className="font-medium">Location</h4>
                                     <p className="text-muted-foreground">
-                                        San Francisco, California
+                                        Bengaluru, India
                                     </p>
                                 </div>
                             </div>
