@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
-import { ArrowRight, BookOpen, Clock } from 'lucide-react'
+import { FaArrowRight, FaBookOpen, FaClock } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -59,7 +59,7 @@ export default function Blog() {
                         transition={{ duration: 0.5 }}
                         className="flex items-center gap-2 text-sm font-medium text-primary mb-3"
                     >
-                        <BookOpen size={18} />
+                        <FaBookOpen size={18} />
                         <span>Blog & Thoughts</span>
                     </motion.div>
 
@@ -136,7 +136,7 @@ export default function Blog() {
                                             {post.date}
                                         </time>
                                         <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                            <Clock className="h-3 w-3" />
+                                            <FaClock className="h-3 w-3" />
                                             {post.readTime}
                                         </span>
                                     </div>
@@ -172,7 +172,7 @@ export default function Blog() {
                                             className="flex items-center gap-2"
                                         >
                                             <span>Read Article</span>
-                                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                            <FaArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                                         </a>
                                     </Button>
                                 </CardFooter>
@@ -184,7 +184,7 @@ export default function Blog() {
                 <div className="flex justify-center mt-12">
                     <Button variant="outline" size="lg" className="gap-2">
                         <span>View All Articles</span>
-                        <ArrowRight className="h-4 w-4" />
+                        <FaArrowRight className="h-4 w-4" />
                     </Button>
                 </div>
             </div>

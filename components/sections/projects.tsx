@@ -3,7 +3,12 @@
 import { useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import { Code, ExternalLink, Github, Layers } from 'lucide-react'
+import {
+    FaCode,
+    FaExternalLinkAlt,
+    FaGithub,
+    FaLayerGroup,
+} from 'react-icons/fa'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -107,7 +112,7 @@ export default function Projects() {
                         transition={{ duration: 0.5 }}
                         className="flex items-center gap-2 text-sm font-medium text-primary mb-4"
                     >
-                        <Layers size={18} />
+                        <FaLayerGroup size={18} />
                         <span>Projects</span>
                     </motion.div>
 
@@ -247,7 +252,7 @@ function ProjectCard({ project }: { project: Project }) {
                                     : ''
                             }`}
                         >
-                            <Github size={16} />
+                            <FaGithub size={16} />
                             <span>Code</span>
                         </a>
                     </Button>
@@ -259,7 +264,7 @@ function ProjectCard({ project }: { project: Project }) {
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2"
                             >
-                                <ExternalLink size={16} />
+                                <FaExternalLinkAlt size={16} />
                                 <span>Demo</span>
                             </a>
                         </Button>

@@ -2,30 +2,30 @@
 
 import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Award, Code, Users, Star } from 'lucide-react'
+import { FaAward, FaCode, FaUsers, FaStar } from 'react-icons/fa'
 import { Card, CardContent } from '@/components/ui/card'
 
 const achievements = [
     {
-        icon: Code,
+        icon: FaCode,
         value: 150,
         label: 'Projects Completed',
         color: 'hsl(var(--chart-1))',
     },
     {
-        icon: Users,
+        icon: FaUsers,
         value: 80,
         label: 'Happy Clients',
         color: 'hsl(var(--chart-2))',
     },
     {
-        icon: Award,
+        icon: FaAward,
         value: 15,
         label: 'Awards Received',
         color: 'hsl(var(--chart-3))',
     },
     {
-        icon: Star,
+        icon: FaStar,
         value: 8,
         label: 'Years Experience',
         color: 'hsl(var(--chart-4))',

@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Quote, MessageSquareQuote } from 'lucide-react'
+import { FaQuoteLeft, FaCommentDots } from 'react-icons/fa'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -58,7 +58,7 @@ export default function Testimonials() {
                         transition={{ duration: 0.5 }}
                         className="flex items-center gap-2 text-sm font-medium text-primary mb-3"
                     >
-                        <MessageSquareQuote size={18} />
+                        <FaCommentDots size={18} />
                         <span>Testimonials</span>
                     </motion.div>
 
@@ -144,7 +144,7 @@ function TestimonialCard({
             <Card className="h-full bg-background">
                 <CardContent className="p-6 flex flex-col h-full">
                     <div className="mb-4 text-primary">
-                        <Quote className="h-8 w-8 opacity-80" />
+                        <FaQuoteLeft className="h-8 w-8 opacity-80" />
                     </div>
 
                     <p className="italic text-muted-foreground mb-6 flex-grow">

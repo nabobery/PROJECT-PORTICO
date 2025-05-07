@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { AlignRight, X, Code2 } from 'lucide-react'
+import { FaAlignRight, FaTimes, FaCode } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import ThemeToggle from '@/components/theme/theme-toggle'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -70,7 +70,7 @@ export default function Navbar() {
                             }}
                             className="relative"
                         >
-                            <Code2 className="h-8 w-8 text-primary" />
+                            <FaCode className="h-8 w-8 text-primary" />
                         </motion.div>
                         <motion.span
                             initial={{ opacity: 0, x: -20 }}
@@ -134,9 +134,9 @@ export default function Navbar() {
                             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
                         >
                             {isMenuOpen ? (
-                                <X className="h-6 w-6" />
+                                <FaTimes className="h-6 w-6" />
                             ) : (
-                                <AlignRight className="h-6 w-6" />
+                                <FaAlignRight className="h-6 w-6" />
                             )}
                         </Button>
                     </div>

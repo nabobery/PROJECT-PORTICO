@@ -1,5 +1,11 @@
 import Link from 'next/link'
-import { Code2, Github, Linkedin, Mail, Rss } from 'lucide-react'
+import {
+    FaCode,
+    FaGithub,
+    FaLinkedinIn,
+    FaEnvelope,
+    FaRss,
+} from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 
 export default function Footer() {
@@ -16,7 +22,7 @@ export default function Footer() {
                             rel="noopener noreferrer"
                             className="flex items-center gap-2"
                         >
-                            <Code2 className="h-6 w-6 text-primary" />
+                            <FaCode className="h-6 w-6 text-primary" />
                             <span className="text-xl font-bold">
                                 Avinash Changrani
                             </span>
@@ -38,7 +44,7 @@ export default function Footer() {
                                     rel="noopener noreferrer"
                                     aria-label="GitHub"
                                 >
-                                    <Github className="h-5 w-5" />
+                                    <FaGithub className="h-5 w-5" />
                                 </Link>
                             </Button>
                             <Button
@@ -53,7 +59,7 @@ export default function Footer() {
                                     rel="noopener noreferrer"
                                     aria-label="LinkedIn"
                                 >
-                                    <Linkedin className="h-5 w-5" />
+                                    <FaLinkedinIn className="h-5 w-5" />
                                 </Link>
                             </Button>
                             <Button
@@ -68,7 +74,7 @@ export default function Footer() {
                                     rel="noopener noreferrer"
                                     aria-label="Blog/Personal Site"
                                 >
-                                    <Rss className="h-5 w-5" />
+                                    <FaRss className="h-5 w-5" />
                                 </Link>
                             </Button>
                             <Button
@@ -81,7 +87,7 @@ export default function Footer() {
                                     href="mailto:avinashchangrani99@gmail.com"
                                     aria-label="Email"
                                 >
-                                    <Mail className="h-5 w-5" />
+                                    <FaEnvelope className="h-5 w-5" />
                                 </Link>
                             </Button>
                         </div>

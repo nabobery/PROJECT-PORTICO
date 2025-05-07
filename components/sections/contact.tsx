@@ -2,7 +2,12 @@
 
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Mail, MapPin, Phone, Send } from 'lucide-react'
+import {
+    FaEnvelope,
+    FaMapMarkerAlt,
+    FaPhoneAlt,
+    FaPaperPlane,
+} from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -79,7 +84,7 @@ export default function Contact() {
                         transition={{ duration: 0.5 }}
                         className="flex items-center gap-2 text-sm font-medium text-primary mb-3"
                     >
-                        <Mail size={18} />
+                        <FaEnvelope size={18} />
                         <span>Contact</span>
                     </motion.div>
 
@@ -144,7 +149,7 @@ export default function Contact() {
                         <div className="space-y-4">
                             <div className="flex items-start gap-4">
                                 <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-1">
-                                    <Mail className="h-5 w-5" />
+                                    <FaEnvelope className="h-5 w-5" />
                                 </div>
                                 <div>
                                     <h4 className="font-medium">Email</h4>
@@ -159,7 +164,7 @@ export default function Contact() {
 
                             <div className="flex items-start gap-4">
                                 <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-1">
-                                    <Phone className="h-5 w-5" />
+                                    <FaPhoneAlt className="h-5 w-5" />
                                 </div>
                                 <div>
                                     <h4 className="font-medium">Phone</h4>
@@ -174,7 +179,7 @@ export default function Contact() {
 
                             <div className="flex items-start gap-4">
                                 <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-1">
-                                    <MapPin className="h-5 w-5" />
+                                    <FaMapMarkerAlt className="h-5 w-5" />
                                 </div>
                                 <div>
                                     <h4 className="font-medium">Location</h4>
@@ -323,7 +328,7 @@ export default function Contact() {
                                         </div>
                                     ) : (
                                         <>
-                                            <Send className="h-5 w-5" />
+                                            <FaPaperPlane className="h-5 w-5" />
                                             <span>Send Message</span>
                                         </>
                                     )}

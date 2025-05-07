@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Briefcase, GraduationCap } from 'lucide-react'
+import { FaBriefcase, FaGraduationCap } from 'react-icons/fa'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -19,7 +19,7 @@ const experiences = [
             'Developed an automated regression testing framework deployed via Docker and Kubernetes.',
             'Engineered a flexible data processing system for dynamic unit conversions and nested data handling.',
         ],
-        icon: Briefcase,
+        icon: FaBriefcase,
     },
     {
         company: 'KLA',
@@ -33,7 +33,7 @@ const experiences = [
             'Developed a React-based micro frontend dashboard with Elastic Search integration for fast log analysis.',
             'Implemented design patterns like Singleton, Factory, Builder, Observer, and Publisher-Subscriber for modularity and maintainability.',
         ],
-        icon: Briefcase,
+        icon: FaBriefcase,
     },
     {
         company: 'IIITDM Kancheepuram',
@@ -44,7 +44,7 @@ const experiences = [
             'Supervised and assisted students in CS1006 Data Structures and Algorithms Practice and CS2010 Computer Organization and Architecture practice courses.',
             'Provided guidance in formulating, improving, and debugging code for weekly coding assignments.',
         ],
-        icon: GraduationCap,
+        icon: FaGraduationCap,
     },
 ]
 
@@ -66,7 +66,7 @@ export default function Experience() {
                         transition={{ duration: 0.5 }}
                         className="flex items-center gap-2 text-sm font-medium text-primary mb-3"
                     >
-                        <Briefcase size={18} />
+                        <FaBriefcase size={18} />
                         <span>Work Experience</span>
                     </motion.div>
 
@@ -228,7 +228,9 @@ export default function Experience() {
 
                                         <div className="flex flex-wrap gap-2">
                                             <Badge variant="secondary">
-                                                {experience.icon.name}
+                                                {experience.icon === FaBriefcase
+                                                    ? 'Briefcase'
+                                                    : 'GraduationCap'}
                                             </Badge>
                                         </div>
                                     </CardContent>
