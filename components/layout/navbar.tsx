@@ -13,6 +13,7 @@ const navItems = [
     { name: 'Experience', href: '#experience' },
     { name: 'Projects', href: '#projects' },
     { name: 'Tech Stack', href: '#tech-radar' },
+    { name: 'CP Stats', href: '#competitive-stats' },
     // { name: 'Blog', href: '#blog' }, // Commented out Blog link
     { name: 'Contact', href: '#contact' },
 ]
