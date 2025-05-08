@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { FaLaptopCode, FaTrophy, FaChartLine, FaFire } from 'react-icons/fa'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -10,6 +10,26 @@ interface LeetCodeStats {
     solvedProblem?: number
     totalSolved?: number // Another possible field name
     solved?: number // Yet another possible field name
+}
+
+// Interfaces for API responses
+interface LeetCodeAcceptedQuestionCount {
+    count: number
+    difficulty: string
+}
+
+interface LeetCodeUserQuestionProgress {
+    numAcceptedQuestions: LeetCodeAcceptedQuestionCount[]
+    // other fields from GQL if needed, e.g., numFailedQuestions, numUntouchedQuestions
+}
+
+interface LeetCodeGraphQLData {
+    userProfileUserQuestionProgressV2: LeetCodeUserQuestionProgress
+}
+
+interface LeetCodeGraphQLResponse {
+    data?: LeetCodeGraphQLData
+    errors?: Array<{ message: string }> // For GraphQL errors
 }
 
 // Codeforces API response interfaces
@@ -105,7 +125,7 @@ const initialPlatformStats: PlatformStat[] = [
         label: 'Problems Solved',
         profileUrl: 'https://leetcode.com/u/Nabobery/',
         color: 'hsl(var(--chart-1))',
-        apiEndpoint: 'https://alfa-leetcode-api.onrender.com/Nabobery/solved',
+        // apiEndpoint: 'https://alfa-leetcode-api.onrender.com/Nabobery/solved', // Will use GraphQL directly
     },
     {
         icon: FaTrophy,
@@ -194,6 +214,30 @@ function Counter({ value, isInView }: { value: number; isInView: boolean }) {
     return <span>{value === null ? 'N/A' : count}</span>
 }
 
+// Simple Loader Component
+function LoadingSpinner() {
+    return (
+        <div className="flex justify-center items-center py-4">
+            <motion.div
+                style={{
+                    width: 24,
+                    height: 24,
+                    border: '3px solid hsl(var(--primary))',
+                    borderTopColor: 'transparent',
+                    borderRadius: '50%',
+                }}
+                animate={{ rotate: 360 }}
+                transition={{
+                    loop: Infinity,
+                    ease: 'linear',
+                    duration: 0.8,
+                }}
+            />
+            <span className="ml-3 text-muted-foreground">Loading stats...</span>
+        </div>
+    )
+}
+
 export default function CompetitiveStats() {
     const sectionRef = useRef(null) // Rename ref for clarity and attach to section
     const isInView = useInView(sectionRef, { once: false, amount: 0.2 })
@@ -213,32 +257,82 @@ export default function CompetitiveStats() {
             const updatedStatsPromises = initialPlatformStats.map(
                 async (platform) => {
                     if (
-                        platform.platformName === 'LeetCode' &&
-                        platform.apiEndpoint
+                        platform.platformName === 'LeetCode'
+                        // && platform.apiEndpoint // No longer using this
                     ) {
                         try {
+                            const graphqlQuery = {
+                                query: `
+                                    query userProfileUserQuestionProgressV2($userSlug: String!) {
+                                      userProfileUserQuestionProgressV2(userSlug: $userSlug) {
+                                        numAcceptedQuestions {
+                                          count
+                                          difficulty
+                                        }
+                                      }
+                                    }
+                                `,
+                                variables: {
+                                    userSlug: platform.username,
+                                },
+                            }
+
                             console.log(
-                                `Fetching LeetCode data from ${platform.apiEndpoint}...`
+                                `Fetching LeetCode data for ${platform.username} via local API route...`
                             )
-                            const response = await fetch(platform.apiEndpoint)
+                            const response = await fetch(
+                                `/api/leetcode-stats?username=${platform.username}`
+                            )
+
                             if (!response.ok) {
+                                const errorBody = await response.text()
                                 throw new Error(
-                                    `API error ${response.status}: ${response.statusText}`
+                                    `API error ${response.status}: ${response.statusText}. Body: ${errorBody}`
                                 )
                             }
-                            const data: LeetCodeStats = await response.json()
-                            console.log('LeetCode API Response:', data)
-                            const solvedCount =
-                                data.solvedProblem ??
-                                data.totalSolved ??
-                                data.solved
-                            if (typeof solvedCount !== 'number') {
+                            const data: LeetCodeGraphQLResponse =
+                                await response.json()
+                            console.log('LeetCode GraphQL API Response:', data)
+
+                            if (data.errors && data.errors.length > 0) {
+                                throw new Error(
+                                    `GraphQL error: ${data.errors
+                                        .map((e) => e.message)
+                                        .join(', ')}`
+                                )
+                            }
+
+                            if (
+                                !data.data ||
+                                !data.data.userProfileUserQuestionProgressV2 ||
+                                !data.data.userProfileUserQuestionProgressV2
+                                    .numAcceptedQuestions
+                            ) {
                                 console.error(
-                                    'LeetCode API did not return a valid number for solved problems. Response:',
+                                    'LeetCode GraphQL API did not return the expected data structure. Response:',
                                     data
                                 )
                                 throw new Error(
-                                    'LeetCode API response malformed for solved count'
+                                    'LeetCode GraphQL API response malformed for solved count'
+                                )
+                            }
+
+                            const solvedCount =
+                                data.data.userProfileUserQuestionProgressV2.numAcceptedQuestions.reduce(
+                                    (sum, item) => sum + item.count,
+                                    0
+                                )
+
+                            if (typeof solvedCount !== 'number') {
+                                console.error(
+                                    'LeetCode API did not return a valid number for solved problems. Calculated sum:',
+                                    solvedCount,
+                                    'Original data:',
+                                    data.data.userProfileUserQuestionProgressV2
+                                        .numAcceptedQuestions
+                                )
+                                throw new Error(
+                                    'LeetCode API response malformed for solved count (after sum)'
                                 )
                             }
                             return { ...platform, value: solvedCount }
@@ -371,11 +465,7 @@ export default function CompetitiveStats() {
                     Competitive Programming Stats
                 </motion.h2>
 
-                {isLoading && (
-                    <p className="text-center text-muted-foreground">
-                        Loading stats...
-                    </p>
-                )}
+                {isLoading && <LoadingSpinner />}
                 {error && (
                     <p className="text-center text-destructive">
                         Error loading stats: {error}
@@ -415,7 +505,7 @@ export default function CompetitiveStats() {
                                             <div
                                                 className="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
                                                 style={{
-                                                    backgroundColor: `${stat.color}20`,
+                                                    backgroundColor: `${stat.color}20`, // Softer background
                                                 }}
                                             >
                                                 <stat.icon
@@ -425,20 +515,49 @@ export default function CompetitiveStats() {
                                                     }}
                                                 />
                                             </div>
-                                            <h3 className="text-3xl md:text-4xl font-bold font-heading text-card-foreground">
-                                                {stat.value !== null ? (
-                                                    <Counter
-                                                        value={stat.value}
-                                                        isInView={isInView}
-                                                    />
-                                                ) : (
-                                                    <span className="text-muted-foreground">
-                                                        N/A
-                                                    </span>
-                                                )}
+                                            <h3 className="text-3xl md:text-4xl font-bold font-heading text-card-foreground flex items-baseline">
+                                                <AnimatePresence mode="wait">
+                                                    <motion.div
+                                                        key={
+                                                            stat.value !== null
+                                                                ? stat.value
+                                                                : 'loading'
+                                                        }
+                                                        initial={{
+                                                            opacity: 0,
+                                                            y: 10,
+                                                        }}
+                                                        animate={{
+                                                            opacity: 1,
+                                                            y: 0,
+                                                        }}
+                                                        exit={{
+                                                            opacity: 0,
+                                                            y: -10,
+                                                        }}
+                                                        transition={{
+                                                            duration: 0.2,
+                                                        }}
+                                                    >
+                                                        {stat.value !== null ? (
+                                                            <Counter
+                                                                value={
+                                                                    stat.value
+                                                                }
+                                                                isInView={
+                                                                    isInView
+                                                                }
+                                                            />
+                                                        ) : (
+                                                            <span className="text-muted-foreground">
+                                                                N/A
+                                                            </span>
+                                                        )}
+                                                    </motion.div>
+                                                </AnimatePresence>
                                                 {stat.value !== null &&
                                                     !stat.isSubmissionCount && (
-                                                        <span className="text-primary">
+                                                        <span className="text-primary ml-1">
                                                             +
                                                         </span>
                                                     )}
