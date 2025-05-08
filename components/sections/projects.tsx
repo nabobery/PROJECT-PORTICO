@@ -18,10 +18,9 @@ const categories = [
     'All',
     'Web Apps',
     'Mobile',
-    'UI/UX',
-    'Open Source',
     'AI/ML',
     'Utilities',
+    'Problem Solving',
 ]
 
 // Define the interface before using it
@@ -32,10 +31,59 @@ interface Project {
     githubLink: string | null
     liveLink: string | null
     imageUrl: string
+    category: string[]
 }
 
 // Explicitly type the projects array
 const projects: Project[] = [
+    {
+        title: 'go-initializer',
+        description:
+            'Generate standardized Go project boilerplate in seconds, setting up with best practices and essential tooling.',
+        techStack: [
+            'EJS',
+            'Node.js',
+            'Express.js',
+            'React.js',
+            'Vite',
+            'Vercel',
+            'Jest',
+            'GitHub Actions',
+        ],
+        githubLink: 'https://github.com/nabobery/go-initializer',
+        liveLink: 'https://go-initializer.vercel.app/',
+        imageUrl: '/images/projects/go-initializer.png',
+        category: ['Web Apps', 'Utilities'],
+    },
+    {
+        title: 'Athena',
+        description:
+            'An intuitive web-based tool designed to streamline the creation of machine learning models by generating starter code and meaningful visualizations. Supports PyTorch and Keras.',
+        techStack: [
+            'TypeScript',
+            'React.js',
+            'D3.js',
+            'Three.js',
+            'Monaco Editor',
+            'PyTorch',
+            'Keras',
+            'Vercel',
+        ],
+        githubLink: 'https://github.com/nabobery/athena',
+        liveLink: 'https://athena-gamma-eight.vercel.app/',
+        imageUrl: '/images/projects/athena.png',
+        category: ['AI/ML', 'Web Apps', 'Open Source'],
+    },
+    {
+        title: 'maaKaVi',
+        description:
+            'An interactive educational platform where students can learn coding through community-created lessons with a documentation interface, interactive elements like a code editor or quizzes, and a forum.',
+        techStack: ['MongoDB', 'Express.js', 'React.js', 'Node.js'],
+        githubLink: 'https://github.com/nabobery/maaKaVi',
+        liveLink: 'https://maa-ka-vi.vercel.app/',
+        imageUrl: '/images/projects/maaKaVi.png',
+        category: ['Web Apps'],
+    },
     {
         title: 'Attribute-Based Pedestrian Detection',
         description:
@@ -43,17 +91,19 @@ const projects: Project[] = [
         techStack: ['Python', 'Flask', 'React', 'YOLOv8'],
         githubLink:
             'https://github.com/nabobery/Attribute-Based-Pedestrian-Detection',
-        liveLink: null, // Or actual link if available
-        imageUrl: '/images/projects/placeholder1.jpg', // Placeholder
+        liveLink: null,
+        imageUrl: '/images/projects/attribute-pedestrian-detection.png',
+        category: ['AI/ML', 'Web Apps'],
     },
     {
         title: 'Before You Sign (Hackathon Project)',
         description:
             'Chrome extension for Dropbox Sign API Hackathon, featuring a lawyer chatbot, text highlighter, and document generator.',
         techStack: ['React.js', 'FastAPI', 'Google Cloud Platform'],
-        githubLink: null, // Add link if available on GitHub
-        liveLink: null,
-        imageUrl: '/images/projects/placeholder2.jpg', // Placeholder
+        githubLink: 'https://github.com/nabobery/before-you-sign',
+        liveLink: 'https://before-you-sign-it.vercel.app/',
+        imageUrl: '/images/projects/before-you-sign.png',
+        category: ['Web Apps', 'Utilities'],
     },
     {
         title: 'Spotify Downloader',
@@ -62,24 +112,82 @@ const projects: Project[] = [
         techStack: ['Python', 'Flask', 'React', 'Spotify API', 'Docker'],
         githubLink: 'https://github.com/nabobery/spotify-downloader',
         liveLink: null,
-        imageUrl: '/images/projects/placeholder3.jpg', // Placeholder
+        imageUrl: '/images/projects/spotify-downloader.png',
+        category: ['Web Apps', 'Utilities'],
+    },
+    {
+        title: 'Advent of Code',
+        description: 'Solutions for Advent of Code programming challenges.',
+        techStack: ['C++', 'Python', 'Go'],
+        githubLink: 'https://github.com/nabobery/Advent-of-Code',
+        liveLink: null,
+        imageUrl: '/images/projects/advent-of-code.png',
+        category: ['Problem Solving'],
+    },
+    {
+        title: 'Go Backend Learning Journey',
+        description:
+            'A collection of backend projects based on roadmap.sh challenges [https://roadmap.sh/backend/projects], implemented in Go using frameworks and libraries like Gin, Gorilla Mux, GORM, Viper, and integrating with databases like MongoDB and Redis.',
+        techStack: [
+            'Go',
+            'Gin',
+            'Gorilla Mux',
+            'GORM',
+            'MongoDB',
+            'Redis',
+            'Viper',
+        ],
+        githubLink: 'https://github.com/nabobery/Backend-Projects',
+        liveLink: null,
+        imageUrl: '/images/projects/go-backend-journey.png',
+        category: ['Web Apps', 'Problem Solving', 'Utilities'],
+    },
+    {
+        title: 'PROJECT MADS',
+        description:
+            'Journey to master Algorithms and Data Structures using competitive programming problems from platforms like LeetCode, CodeChef, CSES etc.',
+        techStack: ['C', 'C++', 'CLion'],
+        githubLink: 'https://github.com/nabobery/PROJECT-MADS',
+        liveLink: null,
+        imageUrl: '/images/projects/project-mads.png',
+        category: ['Problem Solving'],
+    },
+    {
+        title: 'exAImination',
+        description:
+            "An AI-powered test generator that uses OpenAI's API to create questions from text input (.txt files or direct text) and provides immediate feedback based on answer evaluation.",
+        techStack: [
+            'Next.js',
+            'Node.js',
+            'Python',
+            'OpenAI',
+            'TailwindCSS',
+            'Axios',
+        ],
+        githubLink: 'https://github.com/nabobery/eduhack',
+        liveLink: 'https://exaimination.vercel.app/',
+        imageUrl: '/images/projects/exAImination.png',
+        category: ['AI/ML', 'Web Apps'],
     },
     {
         title: 'Maze Solver AI',
         description:
             'AI-powered maze solver implementing BFS, DFS, and A* algorithms, with a Pygame GUI for visualization.',
         techStack: ['Python', 'Pygame', 'BFS', 'DFS', 'A*'],
-        githubLink: null, // Add link if available on GitHub
+        githubLink: 'https://github.com/nabobery/MAZE-SOLVER-USING-AI',
         liveLink: null,
-        imageUrl: '/images/projects/placeholder4.jpg', // Placeholder
+        imageUrl: '/images/projects/maze-solver-using-ai.png',
+        category: ['AI/ML', 'Utilities'],
     },
     {
-        title: 'Advent of Code',
-        description: 'Solutions for Advent of Code programming challenges.',
-        techStack: ['C++', 'Python'], // Based on GitHub, might vary
-        githubLink: 'https://github.com/nabobery/Advent-of-Code',
+        title: 'Project WAR',
+        description:
+            'A Wordle solver built from scratch using a simple algorithm based on game rules and predetermined predictions. Achieves an average prediction count of 3.67689, close to the best-known automated solvers.',
+        techStack: ['C++'],
+        githubLink: null,
         liveLink: null,
-        imageUrl: '/images/projects/placeholder5.jpg', // Placeholder
+        imageUrl: '/images/projects/project-war.png',
+        category: ['Utilities'],
     },
 ]
 
@@ -89,10 +197,8 @@ export default function Projects() {
     const isInView = useInView(ref, { once: false, amount: 0.1 })
 
     const filteredProjects = projects.filter((project: Project) => {
-        // Use the interface here
-        // Re-implement filtering if needed, e.g., based on techStack or keep returning true
         if (activeCategory === 'All') return true
-        return project.techStack.includes(activeCategory) // Example filter by tech stack tag
+        return project.category.includes(activeCategory)
     })
 
     return (
