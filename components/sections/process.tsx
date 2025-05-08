@@ -3,45 +3,45 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import {
-    LightbulbIcon,
-    Code,
-    Paintbrush,
-    BarChart3,
-    Rocket,
-} from 'lucide-react'
+    FaLightbulb,
+    FaCode,
+    FaPaintBrush,
+    FaChartBar,
+    FaRocket,
+} from 'react-icons/fa'
 import { Card, CardContent } from '@/components/ui/card'
 
 const processSteps = [
     {
-        icon: LightbulbIcon,
+        icon: FaLightbulb,
         title: 'Discovery',
         description:
             'Understanding requirements, research, and gathering insights to establish project goals.',
         color: 'hsl(var(--chart-1))',
     },
     {
-        icon: Paintbrush,
+        icon: FaPaintBrush,
         title: 'Design',
         description:
             'Creating wireframes, prototypes, and visual designs with a focus on user experience.',
         color: 'hsl(var(--chart-2))',
     },
     {
-        icon: Code,
+        icon: FaCode,
         title: 'Development',
         description:
             'Writing clean, efficient, and maintainable code following best practices and standards.',
         color: 'hsl(var(--chart-3))',
     },
     {
-        icon: BarChart3,
+        icon: FaChartBar,
         title: 'Testing',
         description:
             'Thorough testing for bugs, performance issues, and ensuring compatibility across devices.',
         color: 'hsl(var(--chart-4))',
     },
     {
-        icon: Rocket,
+        icon: FaRocket,
         title: 'Deployment',
         description:
             'Launching the project with proper CI/CD pipelines and post-launch monitoring.',
@@ -67,7 +67,7 @@ export default function Process() {
                         transition={{ duration: 0.5 }}
                         className="flex items-center gap-2 text-sm font-medium text-primary mb-3"
                     >
-                        <LightbulbIcon size={18} />
+                        <FaLightbulb size={18} />
                         <span>Development Process</span>
                     </motion.div>
 

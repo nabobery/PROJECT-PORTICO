@@ -3,23 +3,54 @@
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import {
-    Code2,
-    Code,
-    Database,
-    Cloud,
-    Terminal,
-    GitMerge,
-    Box,
-    Cpu,
-    LayoutGrid,
-    Puzzle,
-    Figma,
-    Type,
-    FileJson,
-    FileCode,
-    Paintbrush,
-    Atom,
-} from 'lucide-react'
+    FaCode,
+    FaDatabase,
+    FaCloud,
+    FaTerminal,
+    FaGitAlt,
+    FaBox,
+    FaMicrochip,
+    FaTable,
+    FaPuzzlePiece,
+    FaFigma,
+    FaJsSquare,
+    FaHtml5,
+    FaCss3Alt,
+    FaAtom,
+    FaJava,
+    FaPython,
+    FaAws,
+    FaDocker,
+    FaSearch,
+    FaReact,
+    FaKeyboard,
+    FaGoogle,
+    FaNodeJs,
+    FaClock,
+    FaBrain,
+} from 'react-icons/fa'
+import {
+    SiTypescript,
+    SiGo,
+    SiDart,
+    SiTailwindcss,
+    SiD3Dotjs,
+    SiKubernetes,
+    SiPostgresql,
+    SiHelm,
+    SiTerraform,
+    SiPostman,
+    SiVercel,
+    SiNetlify,
+    SiHugo,
+    SiNextdotjs,
+    SiFlutter,
+    SiExpress,
+    SiHono,
+    SiDjango,
+    SiFlask,
+} from 'react-icons/si'
+import { AiOutlineAntDesign } from 'react-icons/ai'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
@@ -27,72 +58,85 @@ import { Badge } from '@/components/ui/badge'
 const skillCategories = [
     {
         name: 'Languages',
-        icon: Code,
+        icon: FaCode,
         skills: [
-            { name: 'C/C++', icon: Code },
-            { name: 'Java', icon: Code },
-            { name: 'Python', icon: Code },
-            { name: 'Bash', icon: Terminal },
-            { name: 'SQL', icon: Database },
-            { name: 'Golang', icon: Code },
-            { name: 'Dart', icon: Code },
-            { name: 'MATLAB', icon: Code },
+            { name: 'C/C++', icon: FaCode },
+            { name: 'Java', icon: FaJava },
+            { name: 'Python', icon: FaPython },
+            { name: 'Bash', icon: FaTerminal },
+            { name: 'SQL', icon: FaDatabase },
+            { name: 'Golang', icon: SiGo },
+            { name: 'Dart', icon: SiDart },
+            { name: 'MATLAB', icon: FaCode },
         ],
     },
     {
         name: 'Web Development',
-        icon: Code,
+        icon: FaCode,
         skills: [
-            { name: 'JavaScript', icon: FileJson },
-            { name: 'TypeScript', icon: Type },
-            { name: 'HTML5', icon: FileCode },
-            { name: 'CSS3', icon: Paintbrush },
-            { name: 'Figma', icon: Figma },
-            { name: 'Zustand', icon: Atom },
-            { name: 'Ag-Grid', icon: LayoutGrid },
-            { name: 'Ant Design', icon: Puzzle },
+            { name: 'JavaScript', icon: FaJsSquare },
+            { name: 'TypeScript', icon: SiTypescript },
+            { name: 'HTML5', icon: FaHtml5 },
+            { name: 'CSS3', icon: FaCss3Alt },
+            { name: 'Tailwind CSS', icon: SiTailwindcss },
+            { name: 'Figma', icon: FaFigma },
+            { name: 'Zustand', icon: FaAtom },
+            { name: 'Ag-Grid', icon: FaTable },
+            { name: 'Ant Design', icon: AiOutlineAntDesign },
+            { name: 'D3.js', icon: SiD3Dotjs },
         ],
     },
     {
         name: 'Technology',
-        icon: Cloud,
+        icon: FaCloud,
         skills: [
-            { name: 'Git', icon: GitMerge },
-            { name: 'GCP', icon: Cloud },
-            { name: 'PostgreSQL', icon: Database },
-            { name: 'AWS (S3, SNS, SQS)', icon: Cloud },
-            { name: 'Docker', icon: Box },
-            { name: 'Kubernetes', icon: Box },
-            { name: 'ElasticSearch', icon: Database },
-            { name: 'SQLAlchemy', icon: Database },
-            { name: 'pgvector', icon: Database },
-            { name: 'Celery', icon: Code },
-            { name: 'Helm', icon: Box },
-            { name: 'Github Actions', icon: GitMerge },
+            { name: 'Git', icon: FaGitAlt },
+            { name: 'Node.js', icon: FaNodeJs },
+            { name: 'GCP', icon: FaGoogle },
+            { name: 'PostgreSQL', icon: SiPostgresql },
+            { name: 'AWS (S3, SNS, SQS)', icon: FaAws },
+            { name: 'Docker', icon: FaDocker },
+            { name: 'Kubernetes', icon: SiKubernetes },
+            { name: 'Helm', icon: SiHelm },
+            { name: 'Terraform', icon: SiTerraform },
+            { name: 'ElasticSearch', icon: FaSearch },
+            { name: 'SQLAlchemy', icon: FaDatabase },
+            { name: 'pgvector', icon: FaDatabase },
+            { name: 'Celery', icon: FaCode },
+            { name: 'Github Actions', icon: FaGitAlt },
+            { name: 'Postman', icon: SiPostman },
+            { name: 'Vercel', icon: SiVercel },
+            { name: 'Netlify', icon: SiNetlify },
+            { name: 'Hugo', icon: SiHugo },
+            { name: 'Cron jobs', icon: FaClock },
         ],
     },
     {
         name: 'Frameworks/Libraries',
-        icon: Code,
+        icon: FaCode,
         skills: [
-            { name: 'React.js', icon: Code },
-            { name: 'Next.js', icon: Code },
-            { name: 'Flutter', icon: Code },
-            { name: 'FastAPI', icon: Code },
-            { name: 'Django', icon: Code },
-            { name: 'Flask', icon: Code },
-            { name: 'Tensorflow', icon: Cpu },
-            { name: 'PyTorch', icon: Cpu },
-            { name: 'LlamaIndex', icon: Cpu },
+            { name: 'React.js', icon: FaReact },
+            { name: 'React Native', icon: FaReact },
+            { name: 'Next.js', icon: SiNextdotjs },
+            { name: 'Flutter', icon: SiFlutter },
+            { name: 'FastAPI', icon: FaCode },
+            { name: 'Express.js', icon: SiExpress },
+            { name: 'Django', icon: SiDjango },
+            { name: 'Flask', icon: SiFlask },
+            { name: 'Hono', icon: SiHono },
+            { name: 'Tensorflow', icon: FaMicrochip },
+            { name: 'PyTorch', icon: FaMicrochip },
+            { name: 'LlamaIndex', icon: FaMicrochip },
+            { name: 'RAG/LLMs', icon: FaBrain },
         ],
     },
     {
         name: 'Problem Solving',
-        icon: Puzzle,
+        icon: FaPuzzlePiece,
         skills: [
-            { name: 'LeetCode', icon: Code },
-            { name: 'CodeForces', icon: Code },
-            { name: 'CodeChef', icon: Code },
+            { name: 'LeetCode', icon: FaKeyboard },
+            { name: 'CodeForces', icon: FaKeyboard },
+            { name: 'CodeChef', icon: FaKeyboard },
         ],
     },
 ]
@@ -122,7 +166,7 @@ export default function TechRadar() {
                         transition={{ duration: 0.5 }}
                         className="flex items-center gap-2 text-sm font-medium text-primary mb-3"
                     >
-                        <Code2 size={18} />
+                        <FaCode size={18} />
                         <span>Tech Stack</span>
                     </motion.div>
 
@@ -155,25 +199,24 @@ export default function TechRadar() {
                     <Tabs
                         value={activeCategory}
                         onValueChange={setActiveCategory}
-                        orientation="vertical"
-                        className="flex flex-col md:flex-row gap-8"
+                        orientation="horizontal"
+                        className="w-full mb-12"
                     >
-                        <TabsList className="flex flex-row md:flex-col justify-start md:justify-start h-auto md:h-full w-full md:w-1/4 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0">
-                            {skillCategories.map((category) => (
-                                <TabsTrigger
-                                    key={category.name}
-                                    value={category.name}
-                                    className="w-full justify-start px-4 py-3 text-left whitespace-nowrap md:whitespace-normal"
-                                >
-                                    <category.icon className="w-5 h-5 mr-3 shrink-0" />
-                                    <span className="grow">
-                                        {category.name}
-                                    </span>
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
+                        <div className="flex justify-center mb-10">
+                            <TabsList className="inline-flex h-auto items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground flex-wrap gap-1">
+                                {skillCategories.map((category) => (
+                                    <TabsTrigger
+                                        key={category.name}
+                                        value={category.name}
+                                        className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-4 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm hover:bg-muted/80"
+                                    >
+                                        <span>{category.name}</span>
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                        </div>
 
-                        <div className="w-full md:w-3/4">
+                        <div>
                             {skillCategories.map((category) => (
                                 <TabsContent
                                     key={category.name}

@@ -4,20 +4,20 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 import {
-    Calendar,
-    Code,
-    GraduationCap,
-    User,
-    Briefcase,
-    Heart,
-} from 'lucide-react'
+    FaCalendarAlt,
+    FaCode,
+    FaGraduationCap,
+    FaUser,
+    FaBriefcase,
+    FaHeart,
+} from 'react-icons/fa'
 import { Progress } from '@/components/ui/progress'
 
 const interests = [
-    { icon: Code, label: 'Open Source' },
-    { icon: GraduationCap, label: 'AI/ML Exploration' },
-    { icon: Calendar, label: 'Tech Meetups' },
-    { icon: Heart, label: 'Problem Solving (LeetCode)' },
+    { icon: FaCode, label: 'Open Source' },
+    { icon: FaGraduationCap, label: 'AI/ML Exploration' },
+    { icon: FaCalendarAlt, label: 'Tech Meetups' },
+    { icon: FaHeart, label: 'Problem Solving (LeetCode)' },
 ]
 
 export default function About() {
@@ -38,7 +38,7 @@ export default function About() {
                         transition={{ duration: 0.5 }}
                         className="flex items-center gap-2 text-sm font-medium text-primary mb-3"
                     >
-                        <User size={18} />
+                        <FaUser size={18} />
                         <span>About Me</span>
                     </motion.div>
 
@@ -69,7 +69,7 @@ export default function About() {
 
                 <div
                     ref={ref}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+                    className="grid grid-cols-1 gap-12 items-center max-w-5xl mx-auto"
                 >
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
@@ -79,15 +79,15 @@ export default function About() {
                                 : { opacity: 0, x: -50 }
                         }
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="space-y-6"
+                        className="space-y-6 max-w-sm mx-auto"
                     >
                         <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/10 to-primary/30 p-1">
                             <div className="absolute inset-0 bg-grid-pattern opacity-10" />
                             <Image
-                                src="https://images.pexels.com/photos/4974915/pexels-photo-4974915.jpeg"
+                                src="./developer-portrait.jpeg"
                                 alt="Developer portrait"
-                                width={600}
-                                height={600}
+                                width={400}
+                                height={400}
                                 className="rounded-lg w-full h-auto object-cover"
                             />
                         </div>
@@ -139,7 +139,7 @@ export default function About() {
                             <h4 className="text-lg font-semibold">Education</h4>
                             <div className="space-y-4 p-4 border rounded-lg bg-background">
                                 <div className="flex items-center gap-3">
-                                    <GraduationCap className="text-primary w-6 h-6" />
+                                    <FaGraduationCap className="text-primary w-6 h-6" />
                                     <div>
                                         <h5 className="font-semibold">
                                             IIITDM Kancheepuram, Chennai, IN

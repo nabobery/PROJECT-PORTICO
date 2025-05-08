@@ -1,69 +1,15 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Mail, MapPin, Phone, Send } from 'lucide-react'
+import { FaEnvelope, FaMapMarkerAlt, FaPaperPlane } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/hooks/use-toast'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form'
-
-const contactSchema = z.object({
-    name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-    email: z.string().email({ message: 'Please enter a valid email address' }),
-    subject: z
-        .string()
-        .min(5, { message: 'Subject must be at least 5 characters' }),
-    message: z
-        .string()
-        .min(10, { message: 'Message must be at least 10 characters' }),
-})
-
-type ContactFormValues = z.infer<typeof contactSchema>
 
 export default function Contact() {
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const { toast } = useToast()
     const ref = useRef(null)
     const isInView = useInView(ref, { once: false, amount: 0.2 })
-
-    const form = useForm<ContactFormValues>({
-        resolver: zodResolver(contactSchema),
-        defaultValues: {
-            name: '',
-            email: '',
-            subject: '',
-            message: '',
-        },
-    })
-
-    function onSubmit(data: ContactFormValues) {
-        setIsSubmitting(true)
-
-        // Simulate form submission
-        setTimeout(() => {
-            console.log(data)
-            setIsSubmitting(false)
-            form.reset()
-
-            toast({
-                title: 'Message sent!',
-                description:
-                    "Thanks for reaching out. I'll get back to you soon.",
-            })
-        }, 1500)
-    }
 
     return (
         <section id="contact" className="py-20 bg-muted/30">
@@ -79,7 +25,7 @@ export default function Contact() {
                         transition={{ duration: 0.5 }}
                         className="flex items-center gap-2 text-sm font-medium text-primary mb-3"
                     >
-                        <Mail size={18} />
+                        <FaEnvelope size={18} />
                         <span>Contact</span>
                     </motion.div>
 
@@ -144,68 +90,31 @@ export default function Contact() {
                         <div className="space-y-4">
                             <div className="flex items-start gap-4">
                                 <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-1">
-                                    <Mail className="h-5 w-5" />
+                                    <FaEnvelope className="h-5 w-5" />
                                 </div>
                                 <div>
                                     <h4 className="font-medium">Email</h4>
                                     <a
-                                        href="mailto:hello@example.com"
+                                        href="mailto:avinashchangrani99@gmail.com"
                                         className="text-muted-foreground hover:text-primary transition-colors"
                                     >
-                                        hello@example.com
+                                        avinashchangrani99@gmail.com
                                     </a>
                                 </div>
                             </div>
 
                             <div className="flex items-start gap-4">
                                 <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-1">
-                                    <Phone className="h-5 w-5" />
-                                </div>
-                                <div>
-                                    <h4 className="font-medium">Phone</h4>
-                                    <a
-                                        href="tel:+1234567890"
-                                        className="text-muted-foreground hover:text-primary transition-colors"
-                                    >
-                                        +1 (234) 567-890
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-4">
-                                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-1">
-                                    <MapPin className="h-5 w-5" />
+                                    <FaMapMarkerAlt className="h-5 w-5" />
                                 </div>
                                 <div>
                                     <h4 className="font-medium">Location</h4>
                                     <p className="text-muted-foreground">
-                                        San Francisco, California
+                                        Bengaluru, India
                                     </p>
                                 </div>
                             </div>
                         </div>
-
-                        {/* <div className="rounded-lg bg-muted p-6 border border-border">
-              <h4 className="font-semibold mb-2">Availability</h4>
-              <p className="text-muted-foreground text-sm mb-4">
-                Currently available for freelance projects and full-time opportunities.
-              </p>
-              
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Response Time</span>
-                  <span className="text-sm text-primary font-medium">24-48 hours</span>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">New Projects</span>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-500">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    <span>Available</span>
-                  </div>
-                </div>
-              </div>
-            </div> */}
                     </motion.div>
 
                     <motion.div
@@ -217,119 +126,87 @@ export default function Contact() {
                         }
                         transition={{ duration: 0.5, delay: 0.3 }}
                     >
-                        <Form {...form}>
-                            <form
-                                onSubmit={form.handleSubmit(onSubmit)}
-                                className="space-y-6"
-                            >
-                                <FormField
-                                    control={form.control}
-                                    name="name"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Name</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder="Your name"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="email"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Email</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder="Your email address"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="subject"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Subject</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder="Subject of your message"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="message"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Message</FormLabel>
-                                            <FormControl>
-                                                <Textarea
-                                                    placeholder="Your message..."
-                                                    className="min-h-[150px] resize-none"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <Button
-                                    type="submit"
-                                    className="w-full gap-2"
-                                    disabled={isSubmitting}
-                                    size="lg"
+                        <form
+                            action="https://formsubmit.co/avinashchangrani99@gmail.com"
+                            method="POST"
+                            className="space-y-6"
+                        >
+                            <input
+                                type="hidden"
+                                name="_subject"
+                                value="New Contact Form Submission from Portfolio!"
+                            />
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="name"
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                 >
-                                    {isSubmitting ? (
-                                        <div className="flex items-center gap-2">
-                                            <svg
-                                                className="animate-spin h-4 w-4 text-primary-foreground"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <circle
-                                                    className="opacity-25"
-                                                    cx="12"
-                                                    cy="12"
-                                                    r="10"
-                                                    stroke="currentColor"
-                                                    strokeWidth="4"
-                                                />
-                                                <path
-                                                    className="opacity-75"
-                                                    fill="currentColor"
-                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                                />
-                                            </svg>
-                                            <span>Sending message...</span>
-                                        </div>
-                                    ) : (
-                                        <>
-                                            <Send className="h-5 w-5" />
-                                            <span>Send Message</span>
-                                        </>
-                                    )}
-                                </Button>
-                            </form>
-                        </Form>
+                                    Name
+                                </label>
+                                <Input
+                                    id="name"
+                                    name="name"
+                                    placeholder="Your name"
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="email"
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Email
+                                </label>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    name="email"
+                                    placeholder="Your email address"
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="subject"
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Subject
+                                </label>
+                                <Input
+                                    id="subject"
+                                    name="subject"
+                                    placeholder="Subject of your message"
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="message"
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Message
+                                </label>
+                                <Textarea
+                                    id="message"
+                                    name="message"
+                                    placeholder="Your message..."
+                                    className="min-h-[150px] resize-none"
+                                    required
+                                />
+                            </div>
+
+                            <Button
+                                type="submit"
+                                className="w-full gap-2"
+                                size="lg"
+                            >
+                                <FaPaperPlane className="h-5 w-5" />
+                                <span>Send Message</span>
+                            </Button>
+                        </form>
                     </motion.div>
                 </div>
             </div>

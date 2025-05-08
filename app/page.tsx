@@ -5,8 +5,9 @@ import Projects from '@/components/sections/projects'
 import TechRadar from '@/components/sections/tech-radar'
 // import Testimonials from '@/components/sections/testimonials';
 // import Blog from '@/components/sections/blog';
-import Process from '@/components/sections/process'
+// import Process from '@/components/sections/process'
 // import Achievements from '@/components/sections/achievements';
+import CompetitiveStats from '@/components/sections/competitive-stats'
 import Contact from '@/components/sections/contact'
 import ScrollProgress from '@/components/ui/scroll-progress'
 
@@ -19,9 +20,10 @@ export default function Home() {
             <Experience />
             <Projects />
             <TechRadar />
+            <CompetitiveStats />
             {/* <Testimonials /> */}
             {/* <Blog /> */}
-            <Process />
+            {/* <Process /> */}
             {/* <Achievements /> */}
             <Contact />
         </div>
