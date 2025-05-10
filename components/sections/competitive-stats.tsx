@@ -2,7 +2,14 @@
 
 import { useRef, useState, useEffect } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
-import { FaLaptopCode, FaTrophy, FaChartLine, FaFire } from 'react-icons/fa'
+import {
+    FaLaptopCode,
+    FaTrophy,
+    FaChartLine,
+    FaFire,
+    FaBookOpen,
+} from 'react-icons/fa'
+import { SiLeetcode, SiCodeforces, SiCodechef } from 'react-icons/si'
 import { Card, CardContent } from '@/components/ui/card'
 
 // Interfaces for API responses (will be refined)
@@ -118,43 +125,43 @@ interface PlatformStat {
 
 const initialPlatformStats: PlatformStat[] = [
     {
-        icon: FaLaptopCode,
+        icon: SiLeetcode,
         platformName: 'LeetCode',
         username: 'Nabobery',
         value: null,
         label: 'Problems Solved',
         profileUrl: 'https://leetcode.com/u/Nabobery/',
-        color: 'hsl(var(--chart-1))',
+        color: '#FFA116',
         // apiEndpoint: 'https://alfa-leetcode-api.onrender.com/Nabobery/solved', // Will use GraphQL directly
     },
     {
-        icon: FaTrophy,
+        icon: SiCodeforces,
         platformName: 'Codeforces',
         username: 'nabobery',
         value: null,
         label: 'Problems Solved',
         profileUrl: 'https://codeforces.com/profile/nabobery',
-        color: 'hsl(var(--chart-2))',
+        color: '#1F8ACB',
         // apiEndpoint for Codeforces will be constructed in fetch
     },
     {
-        icon: FaFire,
+        icon: SiCodechef,
         platformName: 'CodeChef',
         username: 'nabobery',
         value: null, // Will be fetched or fallback
         label: 'Problems Solved',
         profileUrl: 'http://codechef.com/users/nabobery',
-        color: 'hsl(var(--chart-3))',
+        color: '#D67325',
         // apiEndpoint for CodeChef if using a public one, or handled differently
     },
     {
-        icon: FaChartLine,
+        icon: FaBookOpen,
         platformName: 'CSES',
         username: 'nabobery',
         value: 186, // Pre-filled as per original request
         label: 'Submissions',
         profileUrl: 'https://cses.fi/user/93357',
-        color: 'hsl(var(--chart-4))',
+        color: '#29A38E',
         isSubmissionCount: true,
     },
 ]
@@ -250,9 +257,9 @@ export default function CompetitiveStats() {
         const fetchStats = async () => {
             setIsLoading(true)
             setError(null)
-            console.log(
-                'CompetitiveStats: Starting to fetch API data with animations active...'
-            )
+            // console.log(
+            //     'CompetitiveStats: Starting to fetch API data with animations active...'
+            // )
 
             const updatedStatsPromises = initialPlatformStats.map(
                 async (platform) => {
@@ -277,9 +284,9 @@ export default function CompetitiveStats() {
                                 },
                             }
 
-                            console.log(
-                                `Fetching LeetCode data for ${platform.username} via local API route...`
-                            )
+                            // console.log(
+                            //     `Fetching LeetCode data for ${platform.username} via local API route...`
+                            // )
                             const response = await fetch(
                                 `/api/leetcode-stats?username=${platform.username}`
                             )
@@ -292,7 +299,7 @@ export default function CompetitiveStats() {
                             }
                             const data: LeetCodeGraphQLResponse =
                                 await response.json()
-                            console.log('LeetCode GraphQL API Response:', data)
+                            // console.log('LeetCode GraphQL API Response:', data)
 
                             if (data.errors && data.errors.length > 0) {
                                 throw new Error(
@@ -351,9 +358,9 @@ export default function CompetitiveStats() {
                     if (platform.platformName === 'Codeforces') {
                         try {
                             const apiUrl = `https://codeforces.com/api/user.status?handle=${platform.username}&from=1&count=10000` // Fetch a large number of submissions
-                            console.log(
-                                `Fetching Codeforces data from ${apiUrl}...`
-                            )
+                            // console.log(
+                            //     `Fetching Codeforces data from ${apiUrl}...`
+                            // )
                             const response = await fetch(apiUrl)
                             if (!response.ok) {
                                 const errorText = await response.text() // Try to get more details on error
@@ -400,9 +407,9 @@ export default function CompetitiveStats() {
                                 }
                             })
                             const solvedCount = solvedProblems.size
-                            console.log(
-                                `Codeforces solved count for ${platform.username}: ${solvedCount}`
-                            )
+                            // console.log(
+                            //     `Codeforces solved count for ${platform.username}: ${solvedCount}`
+                            // )
                             return { ...platform, value: solvedCount }
                         } catch (e: any) {
                             console.error(
@@ -439,9 +446,9 @@ export default function CompetitiveStats() {
                 )
             }
             setIsLoading(false)
-            console.log(
-                'CompetitiveStats: API data fetching complete with animations active.'
-            )
+            // console.log(
+            //     'CompetitiveStats: API data fetching complete with animations active.'
+            // )
         }
 
         fetchStats()

@@ -41,9 +41,9 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        console.log(
-            `API Route: Fetching LeetCode data for ${username} from LeetCode GraphQL API`
-        )
+        // console.log(
+        //     `API Route: Fetching LeetCode data for ${username} from LeetCode GraphQL API`
+        // )
         const leetcodeResponse = await fetch('https://leetcode.com/graphql/', {
             method: 'POST',
             headers: {
@@ -77,9 +77,9 @@ export async function GET(request: NextRequest) {
         }
 
         const data = await leetcodeResponse.json()
-        console.log(
-            `API Route: Successfully fetched LeetCode data for ${username}`
-        )
+        // console.log(
+        //     `API Route: Successfully fetched LeetCode data for ${username}`
+        // )
         return NextResponse.json(data)
     } catch (error: any) {
         console.error('Error in LeetCode API route:', error)

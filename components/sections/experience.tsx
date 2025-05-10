@@ -2,7 +2,6 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { FaBriefcase, FaGraduationCap } from 'react-icons/fa'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -19,7 +18,7 @@ const experiences = [
             'Developed an automated regression testing framework deployed via Docker and Kubernetes.',
             'Engineered a flexible data processing system for dynamic unit conversions and nested data handling.',
         ],
-        icon: FaBriefcase,
+        type: 'Professional',
     },
     {
         company: 'KLA',
@@ -33,7 +32,7 @@ const experiences = [
             'Developed a React-based micro frontend dashboard with Elastic Search integration for fast log analysis.',
             'Implemented design patterns like Singleton, Factory, Builder, Observer, and Publisher-Subscriber for modularity and maintainability.',
         ],
-        icon: FaBriefcase,
+        type: 'Professional',
     },
     {
         company: 'IIITDM Kancheepuram',
@@ -44,7 +43,7 @@ const experiences = [
             'Supervised and assisted students in CS1006 Data Structures and Algorithms Practice and CS2010 Computer Organization and Architecture practice courses.',
             'Provided guidance in formulating, improving, and debugging code for weekly coding assignments.',
         ],
-        icon: FaGraduationCap,
+        type: 'Academic',
     },
 ]
 
@@ -66,7 +65,6 @@ export default function Experience() {
                         transition={{ duration: 0.5 }}
                         className="flex items-center gap-2 text-sm font-medium text-primary mb-3"
                     >
-                        <FaBriefcase size={18} />
                         <span>Work Experience</span>
                     </motion.div>
 
@@ -95,7 +93,7 @@ export default function Experience() {
                     />
                 </div>
 
-                <div ref={ref} className="relative max-w-3xl mx-auto">
+                <div ref={ref} className="relative max-w-5xl mx-auto">
                     {/* Animated Timeline Line */}
                     <motion.div
                         className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-border origin-top transform md:translate-x-px"
@@ -117,7 +115,7 @@ export default function Experience() {
                                 duration: 0.5,
                                 delay: 0.2 + index * 0.2, // Card animation
                             }}
-                            className="relative md:flex md:items-start mb-12 md:mb-24"
+                            className="relative mb-12 md:mb-24"
                         >
                             {/* Animated Glowing Dot */}
                             <motion.div
@@ -165,16 +163,9 @@ export default function Experience() {
                                 }}
                             />
 
-                            {/* Date Section (Left Column) */}
-                            <div className="md:w-1/2 md:pr-4 md:text-right md:pt-6">
-                                <div className="hidden md:block text-sm font-medium text-muted-foreground">
-                                    {experience.date}
-                                </div>
-                            </div>
-
-                            {/* Card Section (Right Column) with Hover Effect */}
+                            {/* Card Section */}
                             <motion.div
-                                className="md:w-1/2 md:pl-4"
+                                className="max-w-2xl mx-auto"
                                 whileHover={{ y: -6 }} // Lift card on hover
                                 transition={{
                                     type: 'spring',
@@ -185,7 +176,7 @@ export default function Experience() {
                                 <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg">
                                     <CardContent className="p-6">
                                         {/* Mobile Date Display */}
-                                        <div className="md:hidden mb-2">
+                                        <div className="mb-2">
                                             <span className="text-sm font-medium text-muted-foreground">
                                                 {experience.date}
                                             </span>
@@ -228,9 +219,7 @@ export default function Experience() {
 
                                         <div className="flex flex-wrap gap-2">
                                             <Badge variant="secondary">
-                                                {experience.icon === FaBriefcase
-                                                    ? 'Briefcase'
-                                                    : 'GraduationCap'}
+                                                {experience.type}
                                             </Badge>
                                         </div>
                                     </CardContent>
