@@ -257,9 +257,9 @@ export default function CompetitiveStats() {
         const fetchStats = async () => {
             setIsLoading(true)
             setError(null)
-            console.log(
-                'CompetitiveStats: Starting to fetch API data with animations active...'
-            )
+            // console.log(
+            //     'CompetitiveStats: Starting to fetch API data with animations active...'
+            // )
 
             const updatedStatsPromises = initialPlatformStats.map(
                 async (platform) => {
@@ -284,9 +284,9 @@ export default function CompetitiveStats() {
                                 },
                             }
 
-                            console.log(
-                                `Fetching LeetCode data for ${platform.username} via local API route...`
-                            )
+                            // console.log(
+                            //     `Fetching LeetCode data for ${platform.username} via local API route...`
+                            // )
                             const response = await fetch(
                                 `/api/leetcode-stats?username=${platform.username}`
                             )
@@ -299,7 +299,7 @@ export default function CompetitiveStats() {
                             }
                             const data: LeetCodeGraphQLResponse =
                                 await response.json()
-                            console.log('LeetCode GraphQL API Response:', data)
+                            // console.log('LeetCode GraphQL API Response:', data)
 
                             if (data.errors && data.errors.length > 0) {
                                 throw new Error(
@@ -358,9 +358,9 @@ export default function CompetitiveStats() {
                     if (platform.platformName === 'Codeforces') {
                         try {
                             const apiUrl = `https://codeforces.com/api/user.status?handle=${platform.username}&from=1&count=10000` // Fetch a large number of submissions
-                            console.log(
-                                `Fetching Codeforces data from ${apiUrl}...`
-                            )
+                            // console.log(
+                            //     `Fetching Codeforces data from ${apiUrl}...`
+                            // )
                             const response = await fetch(apiUrl)
                             if (!response.ok) {
                                 const errorText = await response.text() // Try to get more details on error
@@ -407,9 +407,9 @@ export default function CompetitiveStats() {
                                 }
                             })
                             const solvedCount = solvedProblems.size
-                            console.log(
-                                `Codeforces solved count for ${platform.username}: ${solvedCount}`
-                            )
+                            // console.log(
+                            //     `Codeforces solved count for ${platform.username}: ${solvedCount}`
+                            // )
                             return { ...platform, value: solvedCount }
                         } catch (e: any) {
                             console.error(
@@ -446,9 +446,9 @@ export default function CompetitiveStats() {
                 )
             }
             setIsLoading(false)
-            console.log(
-                'CompetitiveStats: API data fetching complete with animations active.'
-            )
+            // console.log(
+            //     'CompetitiveStats: API data fetching complete with animations active.'
+            // )
         }
 
         fetchStats()
