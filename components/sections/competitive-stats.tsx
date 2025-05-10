@@ -2,7 +2,14 @@
 
 import { useRef, useState, useEffect } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
-import { FaLaptopCode, FaTrophy, FaChartLine, FaFire } from 'react-icons/fa'
+import {
+    FaLaptopCode,
+    FaTrophy,
+    FaChartLine,
+    FaFire,
+    FaBookOpen,
+} from 'react-icons/fa'
+import { SiLeetcode, SiCodeforces, SiCodechef } from 'react-icons/si'
 import { Card, CardContent } from '@/components/ui/card'
 
 // Interfaces for API responses (will be refined)
@@ -118,43 +125,43 @@ interface PlatformStat {
 
 const initialPlatformStats: PlatformStat[] = [
     {
-        icon: FaLaptopCode,
+        icon: SiLeetcode,
         platformName: 'LeetCode',
         username: 'Nabobery',
         value: null,
         label: 'Problems Solved',
         profileUrl: 'https://leetcode.com/u/Nabobery/',
-        color: 'hsl(var(--chart-1))',
+        color: '#FFA116',
         // apiEndpoint: 'https://alfa-leetcode-api.onrender.com/Nabobery/solved', // Will use GraphQL directly
     },
     {
-        icon: FaTrophy,
+        icon: SiCodeforces,
         platformName: 'Codeforces',
         username: 'nabobery',
         value: null,
         label: 'Problems Solved',
         profileUrl: 'https://codeforces.com/profile/nabobery',
-        color: 'hsl(var(--chart-2))',
+        color: '#1F8ACB',
         // apiEndpoint for Codeforces will be constructed in fetch
     },
     {
-        icon: FaFire,
+        icon: SiCodechef,
         platformName: 'CodeChef',
         username: 'nabobery',
         value: null, // Will be fetched or fallback
         label: 'Problems Solved',
         profileUrl: 'http://codechef.com/users/nabobery',
-        color: 'hsl(var(--chart-3))',
+        color: '#D67325',
         // apiEndpoint for CodeChef if using a public one, or handled differently
     },
     {
-        icon: FaChartLine,
+        icon: FaBookOpen,
         platformName: 'CSES',
         username: 'nabobery',
         value: 186, // Pre-filled as per original request
         label: 'Submissions',
         profileUrl: 'https://cses.fi/user/93357',
-        color: 'hsl(var(--chart-4))',
+        color: '#29A38E',
         isSubmissionCount: true,
     },
 ]
