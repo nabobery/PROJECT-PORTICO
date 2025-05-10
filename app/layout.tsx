@@ -25,9 +25,62 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-    title: 'Code & Development Maestro | Portfolio',
+    metadataBase: new URL('https://avinashchangrani.vercel.app'),
+    title: 'Avinash Changrani | AI & Full-Stack Developer Portfolio (PORTICO)',
     description:
-        'Professional portfolio showcasing coding expertise and development projects',
+        "Explore Avinash Changrani's portfolio: an AI/ML and Full-Stack Software Engineer showcasing innovative projects, expertise in Next.js, React, Python, and more. Discover insights into dynamic rule engines, RAG pipelines, and scalable software solutions.",
+    keywords: [
+        'Avinash Changrani',
+        'Portfolio',
+        'Next.js',
+        'React',
+        'TypeScript',
+        'Full-Stack Developer',
+        'Software Engineer',
+        'AI',
+        'Machine Learning',
+        'Python',
+        'Java',
+        'Web Development',
+        'PORTICO',
+        'Software Development',
+        'Tech Portfolio',
+    ],
+    authors: [
+        { name: 'Avinash Changrani', url: 'https://github.com/nabobery' },
+    ],
+    openGraph: {
+        title: 'Avinash Changrani | AI & Full-Stack Developer Portfolio',
+        description:
+            'Discover innovative projects and expertise in AI/ML and Full-Stack development by Avinash Changrani.',
+        url: 'https://avinashchangrani.vercel.app',
+        siteName: "Avinash Changrani's Portfolio",
+        images: [
+            {
+                url: '/og-image.png',
+                width: 1200,
+                height: 630,
+                alt: "Avinash Changrani's Portfolio Open Graph Image",
+            },
+        ],
+        locale: 'en_US',
+        type: 'website',
+    },
+    icons: {
+        icon: '/portico.png',
+    },
+    robots: {
+        // Optional: good for SEO
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
+    },
 }
 
 export default function RootLayout({
