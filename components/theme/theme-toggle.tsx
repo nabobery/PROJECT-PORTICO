@@ -6,6 +6,17 @@ import { FaMoon, FaSun } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 
+/**
+ * Render a hydration-safe theme toggle button that switches the app between light and dark themes.
+ *
+ * Delays theme-dependent attributes and animations until after the component is mounted to avoid
+ * hydration mismatches. On click, toggles the theme between `'light'` and `'dark'`. After mount,
+ * the control exposes `aria-pressed`, updates its `aria-label` and `title` to reflect the target
+ * action, and visually indicates state with a rotating container and a crossfade between sun and
+ * moon icons.
+ *
+ * @returns The Button JSX element that toggles the theme and includes animated sun/moon icons; when mounted, `aria-pressed` reflects whether the theme is dark.
+ */
 export default function ThemeToggle() {
     const { theme, setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)

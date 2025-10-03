@@ -8,6 +8,13 @@ import { FaArrowDown, FaTerminal } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import { ParticleCanvas } from '@/components/ui/particle-canvas'
 
+/**
+ * Renders the hero section of the page with animated intro, typing role text, action buttons, and a scroll-down indicator.
+ *
+ * Initializes a Typed.js typing effect inside the heading and automatically destroys the Typed instance when the component unmounts. Motion animations respect the user's reduced-motion preference.
+ *
+ * @returns The hero section JSX element containing the particle background, overlay, intro badge, heading with dynamic role text, description, action buttons, and a scroll indicator.
+ */
 export default function Hero() {
     const typedRef = useRef<HTMLSpanElement>(null)
     const typedInstance = useRef<Typed | null>(null)

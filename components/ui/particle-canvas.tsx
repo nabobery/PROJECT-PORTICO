@@ -12,6 +12,14 @@ type Particle = {
     update: () => void
 }
 
+/**
+ * Renders a full-viewport, theme-aware particle canvas with optional mouse interaction.
+ *
+ * The canvas displays animated particles and connecting lines that adapt to CSS variables and the current theme.
+ * If the user prefers reduced motion, the component renders a single static frame and avoids animations and event listeners.
+ *
+ * @returns A canvas element that shows animated particles and connection lines (or a single static frame when reduced-motion is active).
+ */
 export function ParticleCanvas() {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const { theme } = useTheme()
@@ -199,6 +207,17 @@ export function ParticleCanvas() {
     return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 }
 
+/**
+ * Create a particle positioned within the given canvas using theme-aware color.
+ *
+ * Generates a Particle with a random position and radius, a fill color derived from the
+ * CSS `--canvas-particle-rgb` variable or a theme-based fallback, and built-in
+ * `draw` and `update` methods for rendering and simple edge-bounded motion.
+ *
+ * @param canvas - The target HTMLCanvasElement that defines bounds for position and updates
+ * @param theme - Optional theme hint (`'dark'` or other) used to choose sensible color/opacity fallbacks
+ * @returns A Particle object containing `x`, `y`, `radius`, `color`, a `draw(ctx)` method to render the particle, and an `update()` method to advance its position while keeping it inside the canvas
+ */
 function createParticle(
     canvas: HTMLCanvasElement,
     theme?: string | undefined
