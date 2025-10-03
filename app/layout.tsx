@@ -99,6 +99,12 @@ export default function RootLayout({
                     'bg-background font-sans antialiased'
                 )}
             >
+                {/* Prevent theme flash on first paint: initialize class before hydration */}
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: "(function(){try{var s='theme';var t=localStorage.getItem(s)||'system';var m=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;var d=t==='dark'||(t==='system'&&m);document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();",
+                    }}
+                />
                 <ThemeProvider
                     attribute="class"
                     defaultTheme="system"

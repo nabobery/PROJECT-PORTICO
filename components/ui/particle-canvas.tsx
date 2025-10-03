@@ -14,10 +14,18 @@ type Particle = {
 
 export function ParticleCanvas() {
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const { theme } = useTheme()
+    const { theme, resolvedTheme } = useTheme()
     const particlesRef = useRef<Particle[]>([])
     const mouseRef = useRef({ x: 0, y: 0 })
     const animationRef = useRef<number>(0)
+    const cssVarsRef = useRef({
+        primaryRgb: '59, 130, 246',
+        canvasLineRgb: theme === 'dark' ? '255, 255, 255' : '34, 34, 34',
+        canvasParticleRgb: theme === 'dark' ? '255, 255, 255' : '85, 85, 85',
+    })
+    const startedRef = useRef(false)
+    const mouseQueuedRef = useRef(false)
+    const dprRef = useRef(1)
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -32,9 +40,37 @@ export function ParticleCanvas() {
             window.matchMedia &&
             window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+        // read and cache CSS vars once per theme change
+        const readCssVars = () => {
+            const rootStyles = getComputedStyle(document.documentElement)
+            const primaryRaw = rootStyles
+                .getPropertyValue('--primary-rgb')
+                .trim()
+            const canvasLineRaw = rootStyles
+                .getPropertyValue('--canvas-line-rgb')
+                .trim()
+            const canvasParticleRaw = rootStyles
+                .getPropertyValue('--canvas-particle-rgb')
+                .trim()
+            const appliedTheme = resolvedTheme || theme
+            cssVarsRef.current.primaryRgb = primaryRaw || '59, 130, 246'
+            cssVarsRef.current.canvasLineRgb =
+                canvasLineRaw ||
+                (appliedTheme === 'dark' ? '255, 255, 255' : '34, 34, 34')
+            cssVarsRef.current.canvasParticleRgb =
+                canvasParticleRaw ||
+                (appliedTheme === 'dark' ? '255, 255, 255' : '85, 85, 85')
+        }
+
         const resizeCanvas = () => {
-            canvas.width = window.innerWidth
-            canvas.height = window.innerHeight
+            const dpr = Math.max(window.devicePixelRatio || 1, 1)
+            dprRef.current = dpr
+            canvas.width = Math.floor(window.innerWidth * dpr)
+            canvas.height = Math.floor(window.innerHeight * dpr)
+            canvas.style.width = `${window.innerWidth}px`
+            canvas.style.height = `${window.innerHeight}px`
+            ctx.setTransform(1, 0, 0, 1, 0, 0)
+            ctx.scale(dpr, dpr)
             initParticles()
         }
 
@@ -56,17 +92,27 @@ export function ParticleCanvas() {
 
         const initParticles = () => {
             particlesRef.current = []
-            const numParticles = Math.floor(
-                (canvas.width * canvas.height) / 15000
-            )
-
+            // compute particle count using CSS pixels for stability across DPR
+            const cssWidth = window.innerWidth
+            const cssHeight = window.innerHeight
+            const numParticles = Math.floor((cssWidth * cssHeight) / 15000)
             for (let i = 0; i < numParticles; i++) {
-                particlesRef.current.push(createParticle(canvas, theme))
+                particlesRef.current.push(
+                    createParticle(
+                        cssWidth,
+                        cssHeight,
+                        cssVarsRef.current.canvasParticleRgb,
+                        theme
+                    )
+                )
             }
         }
 
         const render = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            // clear using CSS pixel dimensions because the context is scaled by DPR
+            const cssClearWidth = canvas.width / dprRef.current
+            const cssClearHeight = canvas.height / dprRef.current
+            ctx.clearRect(0, 0, cssClearWidth, cssClearHeight)
 
             // Draw and update particles
             particlesRef.current.forEach((particle) => {
@@ -83,44 +129,21 @@ export function ParticleCanvas() {
         const handleMouseMove = (e: MouseEvent) => {
             mouseRef.current.x = e.clientX
             mouseRef.current.y = e.clientY
+            if (!mouseQueuedRef.current) {
+                mouseQueuedRef.current = true
+                requestAnimationFrame(() => {
+                    mouseQueuedRef.current = false
+                })
+            }
         }
 
         const drawConnections = (ctx: CanvasRenderingContext2D) => {
             const connectionRadius = 150
             const mouseRadius = 200
             const particles = particlesRef.current
-            // get computed CSS colors for robust theming (falls back to sensible values)
-            const rootStyles =
-                typeof window !== 'undefined'
-                    ? getComputedStyle(document.documentElement)
-                    : null
-            const fgRaw =
-                rootStyles && rootStyles.getPropertyValue('--foreground-rgb')
-            const primaryRaw =
-                rootStyles && rootStyles.getPropertyValue('--primary-rgb')
-            const canvasLineRaw =
-                rootStyles && rootStyles.getPropertyValue('--canvas-line-rgb')
-            const canvasParticleRaw =
-                rootStyles &&
-                rootStyles.getPropertyValue('--canvas-particle-rgb')
-
-            // sensible fallbacks: light theme uses darker greys, dark theme uses white
-            const fgRgb =
-                fgRaw && fgRaw.trim() !== ''
-                    ? fgRaw.trim()
-                    : theme === 'dark'
-                      ? '255, 255, 255'
-                      : '34, 34, 34'
-            const primaryRgb =
-                primaryRaw && primaryRaw.trim() !== ''
-                    ? primaryRaw.trim()
-                    : '59, 130, 246'
-            const canvasLineRgb =
-                canvasLineRaw && canvasLineRaw.trim() !== ''
-                    ? canvasLineRaw.trim()
-                    : theme === 'dark'
-                      ? '255, 255, 255'
-                      : '34, 34, 34'
+            // read cached CSS vars (computed on theme change)
+            const primaryRgb = cssVarsRef.current.primaryRgb
+            const canvasLineRgb = cssVarsRef.current.canvasLineRgb
             const isLight = theme !== 'dark'
 
             // Draw connections between nearby particles
@@ -172,51 +195,67 @@ export function ParticleCanvas() {
             }
         }
 
-        if (!prefersReducedMotion) {
-            window.addEventListener('resize', resizeCanvas)
-            window.addEventListener('mousemove', handleMouseMove)
+        // Defer reading CSS vars and initialization to next frame so theme class (from next-themes)
+        // can be applied to document.documentElement before we sample computed styles.
+        let initRaf = 0
+        initRaf = requestAnimationFrame(() => {
+            readCssVars()
+            if (!prefersReducedMotion) {
+                window.addEventListener('resize', resizeCanvas)
+                window.addEventListener('mousemove', handleMouseMove)
 
-            resizeCanvas()
-            // apply client-only styles to avoid hydration mismatch
-            applyCanvasStyles()
-            render()
-        } else {
-            // reduced motion: draw a single frame without animation
-            resizeCanvas()
-            // draw particles once
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            particlesRef.current.forEach((particle) => particle.draw(ctx))
-            drawConnections(ctx)
-        }
+                resizeCanvas()
+                // apply client-only styles to avoid hydration mismatch
+                applyCanvasStyles()
+                render()
+                startedRef.current = true
+            } else {
+                // reduced motion: draw a single frame without animation
+                resizeCanvas()
+                // draw particles once using CSS pixel dims
+                const cssClearWidth = canvas.width / dprRef.current
+                const cssClearHeight = canvas.height / dprRef.current
+                ctx.clearRect(0, 0, cssClearWidth, cssClearHeight)
+                particlesRef.current.forEach((particle) => particle.draw(ctx))
+                drawConnections(ctx)
+            }
+        })
 
         return () => {
-            window.removeEventListener('resize', resizeCanvas)
-            window.removeEventListener('mousemove', handleMouseMove)
-            cancelAnimationFrame(animationRef.current)
+            cancelAnimationFrame(initRaf)
+            if (!prefersReducedMotion) {
+                window.removeEventListener('resize', resizeCanvas)
+                window.removeEventListener('mousemove', handleMouseMove)
+                if (startedRef.current) {
+                    cancelAnimationFrame(animationRef.current)
+                }
+            }
         }
     }, [theme])
 
-    return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+    return (
+        <canvas
+            ref={canvasRef}
+            className="absolute inset-0 w-full h-full"
+            aria-hidden="true"
+        />
+    )
 }
 
 function createParticle(
-    canvas: HTMLCanvasElement,
-    theme?: string | undefined
+    cssWidth: number,
+    cssHeight: number,
+    canvasParticleRgb?: string,
+    theme?: string
 ): Particle {
-    const x = Math.random() * canvas.width
-    const y = Math.random() * canvas.height
+    const x = Math.random() * cssWidth
+    const y = Math.random() * cssHeight
     const radius = Math.random() * 2 + 1
 
-    // Particle fill color should use canvas particle CSS variable when available
-    const rootStyles =
-        typeof window !== 'undefined'
-            ? getComputedStyle(document.documentElement)
-            : null
-    const canvasParticleRaw =
-        rootStyles && rootStyles.getPropertyValue('--canvas-particle-rgb')
+    // Use passed-in CSS var if available, otherwise fallback by theme
     const baseColor =
-        canvasParticleRaw && canvasParticleRaw.trim() !== ''
-            ? canvasParticleRaw.trim()
+        canvasParticleRgb && canvasParticleRgb.trim() !== ''
+            ? canvasParticleRgb.trim()
             : theme === 'dark'
               ? '255, 255, 255'
               : '85, 85, 85'
@@ -246,14 +285,14 @@ function createParticle(
             this.y += vy
 
             // Bounce off edges
-            if (this.x < 0 || this.x > canvas.width) {
-                this.x = Math.max(0, Math.min(this.x, canvas.width))
-                this.x = this.x < 0 ? radius : canvas.width - radius
+            if (this.x < 0 || this.x > cssWidth) {
+                this.x = Math.max(0, Math.min(this.x, cssWidth))
+                this.x = this.x < 0 ? radius : cssWidth - radius
             }
 
-            if (this.y < 0 || this.y > canvas.height) {
-                this.y = Math.max(0, Math.min(this.y, canvas.height))
-                this.y = this.y < 0 ? radius : canvas.height - radius
+            if (this.y < 0 || this.y > cssHeight) {
+                this.y = Math.max(0, Math.min(this.y, cssHeight))
+                this.y = this.y < 0 ? radius : cssHeight - radius
             }
         },
     }
