@@ -8,6 +8,13 @@ import { FaArrowDown, FaTerminal } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import { ParticleCanvas } from '@/components/ui/particle-canvas'
 
+/**
+ * Render the hero section of the homepage with background particles, an animated intro badge, a typed-role headline, descriptive text, and action buttons.
+ *
+ * Initializes a Typed.js typing animation for the role label and cleans it up on unmount; all motion respects the user's reduced-motion preference.
+ *
+ * @returns The JSX element for the hero section.
+ */
 export default function Hero() {
     const typedRef = useRef<HTMLSpanElement>(null)
     const typedInstance = useRef<Typed | null>(null)

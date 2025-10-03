@@ -12,6 +12,13 @@ type Particle = {
     update: () => void
 }
 
+/**
+ * Renders a full-viewport particle background that adapts to the current theme, device pixel ratio, and the user's reduced-motion preference.
+ *
+ * The canvas displays moving particles that connect to each other and (when allowed) to the mouse pointer; it reads theme-aware CSS variables for colors and opacity, resizes for DPR changes, and skips animation when the user prefers reduced motion.
+ *
+ * @returns A canvas-backed React element that covers the viewport with the particle visualization
+ */
 export function ParticleCanvas() {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const { theme, resolvedTheme } = useTheme()
@@ -242,6 +249,15 @@ export function ParticleCanvas() {
     )
 }
 
+/**
+ * Create a particle positioned within the provided CSS width and height with randomized size, velocity, and a theme-aware color.
+ *
+ * @param cssWidth - Canvas width in CSS pixels used to initialize position and clamp movement
+ * @param cssHeight - Canvas height in CSS pixels used to initialize position and clamp movement
+ * @param canvasParticleRgb - Optional CSS RGB string (e.g. `"255, 255, 255"`) to use as the particle's base color; when omitted, a theme-based fallback is used
+ * @param theme - Optional theme hint (`"dark"` or `"light"`) that selects color fallbacks and alpha ranges for the particle
+ * @returns A Particle object with `x`, `y`, `radius`, `color`, a `draw(ctx)` method that renders the filled circle, and an `update()` method that advances position with small velocity and enforces edge bouncing
+ */
 function createParticle(
     cssWidth: number,
     cssHeight: number,

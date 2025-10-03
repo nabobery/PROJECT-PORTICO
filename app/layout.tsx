@@ -83,6 +83,14 @@ export const metadata: Metadata = {
     },
 }
 
+/**
+ * Root layout component that establishes the document structure, global fonts, and theming.
+ *
+ * Renders the <html> and <body> elements with configured font classes, injects a pre-hydration script to apply the preferred color scheme to avoid theme flash, and composes the page with ThemeProvider, CursorRipple, Navbar, main content area, Footer, and Toaster.
+ *
+ * @param children - Page content to render inside the layout's main area
+ * @returns The root HTML structure as a React element
+ */
 export default function RootLayout({
     children,
 }: {
