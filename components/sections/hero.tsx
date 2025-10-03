@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import Typed from 'typed.js'
 import Link from 'next/link'
 import { FaArrowDown, FaTerminal } from 'react-icons/fa'
@@ -11,6 +11,7 @@ import { ParticleCanvas } from '@/components/ui/particle-canvas'
 export default function Hero() {
     const typedRef = useRef<HTMLSpanElement>(null)
     const typedInstance = useRef<Typed | null>(null)
+    const shouldReduceMotion = useReducedMotion()
 
     useEffect(() => {
         if (typedRef.current) {
@@ -41,6 +42,17 @@ export default function Hero() {
         >
             <div className="absolute inset-0 z-0">
                 <ParticleCanvas />
+
+                {/* overlay between canvas and content to improve text contrast */}
+                <div
+                    aria-hidden
+                    className="absolute inset-0 pointer-events-none z-[5]"
+                >
+                    {/* Desktop: subtle gradient overlay; use CSS variables so dark/light are controlled in globals.css */}
+                    <div className="hidden md:block absolute inset-0 bg-gradient-to-b from-transparent to-white/10 dark:to-black/60" />
+                    {/* Mobile: slightly stronger translucent layer for readability */}
+                    <div className="md:hidden absolute inset-0 bg-white/10 dark:bg-black/60" />
+                </div>
             </div>
 
             <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -49,7 +61,9 @@ export default function Hero() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5 }}
+                            transition={{
+                                duration: shouldReduceMotion ? 0 : 0.5,
+                            }}
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20 self-center md:self-start"
                         >
                             <FaTerminal size={16} />
@@ -61,7 +75,10 @@ export default function Hero() {
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
+                            transition={{
+                                duration: shouldReduceMotion ? 0 : 0.5,
+                                delay: shouldReduceMotion ? 0 : 0.1,
+                            }}
                             className="text-4xl md:text-6xl lg:text-7xl font-bold font-heading tracking-tight"
                         >
                             Hi, I&apos;m Avinash, <br className="md:hidden" />a{' '}
@@ -73,7 +90,10 @@ export default function Hero() {
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
+                            transition={{
+                                duration: shouldReduceMotion ? 0 : 0.5,
+                                delay: shouldReduceMotion ? 0 : 0.2,
+                            }}
                             className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0"
                         >
                             Passionate AI/ML and Full-Stack Engineer dedicated
@@ -85,7 +105,10 @@ export default function Hero() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.3 }}
+                            transition={{
+                                duration: shouldReduceMotion ? 0 : 0.5,
+                                delay: shouldReduceMotion ? 0 : 0.3,
+                            }}
                             className="flex flex-wrap gap-4 justify-center md:justify-start"
                         >
                             <Button size="lg" asChild>
@@ -102,17 +125,26 @@ export default function Hero() {
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1, duration: 0.5 }}
+                transition={{
+                    delay: shouldReduceMotion ? 0 : 1,
+                    duration: shouldReduceMotion ? 0 : 0.5,
+                }}
                 className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20"
             >
                 <Link href="#about" aria-label="Scroll down">
                     <motion.div
-                        animate={{ y: [0, 8, 0] }}
-                        transition={{
-                            duration: 1.5,
-                            repeat: Infinity,
-                            ease: 'easeInOut',
-                        }}
+                        animate={
+                            shouldReduceMotion ? { y: 0 } : { y: [0, 8, 0] }
+                        }
+                        transition={
+                            shouldReduceMotion
+                                ? { duration: 0 }
+                                : {
+                                      duration: 1.5,
+                                      repeat: Infinity,
+                                      ease: 'easeInOut',
+                                  }
+                        }
                     >
                         <FaArrowDown className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors" />
                     </motion.div>

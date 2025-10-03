@@ -20,6 +20,11 @@
     :root {
         --background: 0 0% 100%;
         --foreground: 0 0% 3.9%;
+        /* canvas-specific tuning for designers: line and particle colors */
+        --canvas-line-rgb: 34, 34, 34;
+        --canvas-particle-rgb: 85, 85, 85;
+        /* per-theme opacity for canvas when applied on client after hydration */
+        --canvas-opacity: 1;
         --card: 0 0% 100%;
         --card-foreground: 0 0% 3.9%;
         --popover: 0 0% 100%;
@@ -48,6 +53,9 @@
     .dark {
         --background: 222 47% 11%;
         --foreground: 0 0% 98%;
+        --canvas-line-rgb: 255, 255, 255;
+        --canvas-particle-rgb: 255, 255, 255;
+        --canvas-opacity: 0.95;
         --card: 222 47% 11%;
         --card-foreground: 0 0% 98%;
         --popover: 222 47% 11%;

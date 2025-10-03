@@ -26,10 +26,32 @@ export function ParticleCanvas() {
         const ctx = canvas.getContext('2d')
         if (!ctx) return
 
+        // Respect user's reduced motion preference: if reduced, render a static scene once and avoid animations/listeners
+        const prefersReducedMotion =
+            typeof window !== 'undefined' &&
+            window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
         const resizeCanvas = () => {
             canvas.width = window.innerWidth
             canvas.height = window.innerHeight
             initParticles()
+        }
+
+        // apply visual canvas-only styles after mount to avoid SSR/client mismatch
+        const applyCanvasStyles = () => {
+            // read computed CSS vars for opacity fallbacks
+            const rootStyles = getComputedStyle(document.documentElement)
+            const opacityVar = rootStyles
+                .getPropertyValue('--canvas-opacity')
+                .trim()
+            if (opacityVar) {
+                canvas.style.opacity = opacityVar
+            } else {
+                // fallback: slightly translucent in dark mode, fully visible in light
+                canvas.style.opacity = theme === 'dark' ? '0.95' : '1'
+            }
+            canvas.style.background = 'transparent'
         }
 
         const initParticles = () => {
@@ -67,6 +89,39 @@ export function ParticleCanvas() {
             const connectionRadius = 150
             const mouseRadius = 200
             const particles = particlesRef.current
+            // get computed CSS colors for robust theming (falls back to sensible values)
+            const rootStyles =
+                typeof window !== 'undefined'
+                    ? getComputedStyle(document.documentElement)
+                    : null
+            const fgRaw =
+                rootStyles && rootStyles.getPropertyValue('--foreground-rgb')
+            const primaryRaw =
+                rootStyles && rootStyles.getPropertyValue('--primary-rgb')
+            const canvasLineRaw =
+                rootStyles && rootStyles.getPropertyValue('--canvas-line-rgb')
+            const canvasParticleRaw =
+                rootStyles &&
+                rootStyles.getPropertyValue('--canvas-particle-rgb')
+
+            // sensible fallbacks: light theme uses darker greys, dark theme uses white
+            const fgRgb =
+                fgRaw && fgRaw.trim() !== ''
+                    ? fgRaw.trim()
+                    : theme === 'dark'
+                      ? '255, 255, 255'
+                      : '34, 34, 34'
+            const primaryRgb =
+                primaryRaw && primaryRaw.trim() !== ''
+                    ? primaryRaw.trim()
+                    : '59, 130, 246'
+            const canvasLineRgb =
+                canvasLineRaw && canvasLineRaw.trim() !== ''
+                    ? canvasLineRaw.trim()
+                    : theme === 'dark'
+                      ? '255, 255, 255'
+                      : '34, 34, 34'
+            const isLight = theme !== 'dark'
 
             // Draw connections between nearby particles
             for (let i = 0; i < particles.length; i++) {
@@ -80,8 +135,12 @@ export function ParticleCanvas() {
                         ctx.beginPath()
                         ctx.moveTo(particles[i].x, particles[i].y)
                         ctx.lineTo(particles[j].x, particles[j].y)
-                        ctx.strokeStyle = `rgba(var(--primary-rgb), ${opacity * 0.2})`
-                        ctx.lineWidth = 1
+                        // use canvas-specific color (designer tuneable) so lines contrast correctly
+                        const lineAlpha = isLight
+                            ? Math.min(0.95, opacity * 1)
+                            : Math.min(0.85, opacity * 0.6)
+                        ctx.strokeStyle = `rgba(${canvasLineRgb}, ${lineAlpha})`
+                        ctx.lineWidth = isLight ? 1.4 : 1
                         ctx.stroke()
                     }
                 }
@@ -96,8 +155,12 @@ export function ParticleCanvas() {
                     ctx.beginPath()
                     ctx.moveTo(particles[i].x, particles[i].y)
                     ctx.lineTo(mouseRef.current.x, mouseRef.current.y)
-                    ctx.strokeStyle = `rgba(var(--primary-rgb), ${opacity * 0.3})`
-                    ctx.lineWidth = 1.5
+                    // emphasize mouse connections using primary accent for affordance
+                    const mouseAlpha = isLight
+                        ? Math.min(0.98, opacity * 1.1)
+                        : Math.min(0.95, opacity * 0.9)
+                    ctx.strokeStyle = `rgba(${primaryRgb}, ${mouseAlpha})`
+                    ctx.lineWidth = isLight ? 1.8 : 1.5
                     ctx.stroke()
 
                     // Move particles slightly toward mouse
@@ -109,11 +172,22 @@ export function ParticleCanvas() {
             }
         }
 
-        window.addEventListener('resize', resizeCanvas)
-        window.addEventListener('mousemove', handleMouseMove)
+        if (!prefersReducedMotion) {
+            window.addEventListener('resize', resizeCanvas)
+            window.addEventListener('mousemove', handleMouseMove)
 
-        resizeCanvas()
-        render()
+            resizeCanvas()
+            // apply client-only styles to avoid hydration mismatch
+            applyCanvasStyles()
+            render()
+        } else {
+            // reduced motion: draw a single frame without animation
+            resizeCanvas()
+            // draw particles once
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            particlesRef.current.forEach((particle) => particle.draw(ctx))
+            drawConnections(ctx)
+        }
 
         return () => {
             window.removeEventListener('resize', resizeCanvas)
@@ -122,13 +196,7 @@ export function ParticleCanvas() {
         }
     }, [theme])
 
-    return (
-        <canvas
-            ref={canvasRef}
-            className="absolute inset-0 w-full h-full opacity-60"
-            style={{ background: 'transparent' }}
-        />
-    )
+    return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 }
 
 function createParticle(
@@ -139,9 +207,24 @@ function createParticle(
     const y = Math.random() * canvas.height
     const radius = Math.random() * 2 + 1
 
-    // Different colors for dark/light themes
-    const baseColor = theme === 'dark' ? '255, 255, 255' : '0, 0, 0'
-    const color = `rgba(${baseColor}, ${Math.random() * 0.4 + 0.1})`
+    // Particle fill color should use canvas particle CSS variable when available
+    const rootStyles =
+        typeof window !== 'undefined'
+            ? getComputedStyle(document.documentElement)
+            : null
+    const canvasParticleRaw =
+        rootStyles && rootStyles.getPropertyValue('--canvas-particle-rgb')
+    const baseColor =
+        canvasParticleRaw && canvasParticleRaw.trim() !== ''
+            ? canvasParticleRaw.trim()
+            : theme === 'dark'
+              ? '255, 255, 255'
+              : '85, 85, 85'
+    const alpha =
+        theme === 'dark'
+            ? Math.random() * 0.5 + 0.3
+            : Math.random() * 0.4 + 0.15
+    const color = `rgba(${baseColor}, ${alpha})`
 
     // Random velocity
     const vx = (Math.random() - 0.5) * 0.2
