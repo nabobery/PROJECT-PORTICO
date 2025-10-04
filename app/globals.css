@@ -90,6 +90,8 @@
         /* @apply bg-background text-foreground; */
         background-color: hsl(var(--background));
         color: hsl(var(--foreground));
+        /* Prevent horizontal scroll caused by small rounding issues or full-viewport elements */
+        overflow-x: hidden;
     }
     html {
         scroll-behavior: smooth;
@@ -127,6 +129,27 @@
     .font-heading {
         font-family: var(--font-heading);
     }
+}
+
+/* Safe area helpers for iOS notch and small devices */
+.safe-area-inset-right {
+    padding-right: env(safe-area-inset-right, 0.5rem);
+}
+
+/* Safe area helper for both sides (use on header/container to avoid notch clipping) */
+.safe-area {
+    padding-left: env(safe-area-inset-left, 1rem);
+    padding-right: env(safe-area-inset-right, 1rem);
+}
+
+/* Ensure the root cannot exceed the viewport width and disable horizontal panning */
+html,
+body,
+#__next {
+    width: 100%;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
 }
 
 /* Custom animations */
