@@ -177,7 +177,12 @@ export default function Navbar() {
                                         {activeSection ===
                                             item.href.substring(1) && (
                                             <motion.span
-                                                layoutId="activeSection"
+                                                {...(prefersReducedMotion
+                                                    ? { layout: false }
+                                                    : {
+                                                          layoutId:
+                                                              'activeSection',
+                                                      })}
                                                 className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
                                                 {...(!prefersReducedMotion
                                                     ? {
