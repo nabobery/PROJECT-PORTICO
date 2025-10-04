@@ -4,9 +4,15 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { FaAlignRight, FaCode } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import {
+    Sheet,
+    SheetContent,
+    SheetTrigger,
+    SheetTitle,
+    SheetDescription,
+} from '@/components/ui/sheet'
 import ThemeToggle from '@/components/theme/theme-toggle'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useLockScroll } from '@/lib/use-lock-scroll'
 
@@ -21,6 +27,47 @@ const navItems = [
 ]
 
 export default function Navbar() {
+    // Respect user preference for reduced motion. Framer Motion provides
+    // `useReducedMotion()` which returns a boolean; as a fallback (SSR-safe)
+    // we check matchMedia in an effect when needed. We'll use the hook value
+    // and fall back to a window matchMedia check to be defensive.
+    const prefersReducedMotionHook = useReducedMotion()
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(
+        prefersReducedMotionHook
+    )
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        if (prefersReducedMotionHook) return // already true from hook
+
+        const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+        const handler = () => setPrefersReducedMotion(mq.matches)
+
+        handler()
+        try {
+            if (typeof mq.addEventListener === 'function') {
+                mq.addEventListener('change', handler)
+            } else if (typeof (mq as any).addListener === 'function') {
+                // addListener is deprecated; keep as a fallback for older browsers
+                ;(mq as any).addListener(handler)
+            }
+        } catch (e) {
+            // ignore - defensive for older browsers
+        }
+
+        return () => {
+            try {
+                if (typeof mq.removeEventListener === 'function') {
+                    mq.removeEventListener('change', handler)
+                } else if (typeof (mq as any).removeListener === 'function') {
+                    ;(mq as any).removeListener(handler)
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+    }, [prefersReducedMotionHook])
+
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [scrollPosition, setScrollPosition] = useState(0)
     const [activeSection, setActiveSection] = useState('')
@@ -80,22 +127,30 @@ export default function Navbar() {
                         className="text-xl font-bold flex items-center gap-2 font-heading"
                     >
                         <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{
-                                type: 'spring',
-                                stiffness: 260,
-                                damping: 20,
-                                delay: 0.1,
-                            }}
+                            {...(!prefersReducedMotion
+                                ? {
+                                      initial: { scale: 0 },
+                                      animate: { scale: 1 },
+                                      transition: {
+                                          type: 'spring',
+                                          stiffness: 260,
+                                          damping: 20,
+                                          delay: 0.1,
+                                      },
+                                  }
+                                : {})}
                             className="relative"
                         >
                             <FaCode className="h-8 w-8 text-primary" />
                         </motion.div>
                         <motion.span
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.2, duration: 0.5 }}
+                            {...(!prefersReducedMotion
+                                ? {
+                                      initial: { opacity: 0, x: -20 },
+                                      animate: { opacity: 1, x: 0 },
+                                      transition: { delay: 0.2, duration: 0.5 },
+                                  }
+                                : {})}
                         >
                             Avinash Changrani
                         </motion.span>
@@ -107,9 +162,13 @@ export default function Navbar() {
                             {navItems.map((item, i) => (
                                 <motion.li
                                     key={item.name}
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 * i }}
+                                    {...(!prefersReducedMotion
+                                        ? {
+                                              initial: { opacity: 0, y: -10 },
+                                              animate: { opacity: 1, y: 0 },
+                                              transition: { delay: 0.1 * i },
+                                          }
+                                        : {})}
                                 >
                                     <Link
                                         href={item.href}
@@ -127,11 +186,15 @@ export default function Navbar() {
                                             <motion.span
                                                 layoutId="activeSection"
                                                 className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
-                                                transition={{
-                                                    type: 'spring',
-                                                    stiffness: 380,
-                                                    damping: 30,
-                                                }}
+                                                {...(!prefersReducedMotion
+                                                    ? {
+                                                          transition: {
+                                                              type: 'spring',
+                                                              stiffness: 380,
+                                                              damping: 30,
+                                                          },
+                                                      }
+                                                    : {})}
                                             />
                                         )}
                                     </Link>
@@ -165,6 +228,12 @@ export default function Navbar() {
                                 side="right"
                                 className="w-[280px] sm:w-[350px]"
                             >
+                                <SheetTitle className="sr-only">
+                                    Mobile navigation
+                                </SheetTitle>
+                                <SheetDescription className="sr-only">
+                                    Site navigation links and theme toggle
+                                </SheetDescription>
                                 <nav
                                     className="flex flex-col gap-6"
                                     aria-label="Mobile navigation"
@@ -174,9 +243,21 @@ export default function Navbar() {
                                         {navItems.map((item, i) => (
                                             <motion.li
                                                 key={item.name}
-                                                initial={{ opacity: 0, x: -10 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: 0.05 * i }}
+                                                {...(!prefersReducedMotion
+                                                    ? {
+                                                          initial: {
+                                                              opacity: 0,
+                                                              x: -10,
+                                                          },
+                                                          animate: {
+                                                              opacity: 1,
+                                                              x: 0,
+                                                          },
+                                                          transition: {
+                                                              delay: 0.05 * i,
+                                                          },
+                                                      }
+                                                    : {})}
                                             >
                                                 <Link
                                                     href={item.href}
@@ -198,9 +279,21 @@ export default function Navbar() {
                                             </motion.li>
                                         ))}
                                         <motion.li
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: 0.3 }}
+                                            {...(!prefersReducedMotion
+                                                ? {
+                                                      initial: {
+                                                          opacity: 0,
+                                                          x: -10,
+                                                      },
+                                                      animate: {
+                                                          opacity: 1,
+                                                          x: 0,
+                                                      },
+                                                      transition: {
+                                                          delay: 0.3,
+                                                      },
+                                                  }
+                                                : {})}
                                             className="mt-2"
                                         >
                                             <Button
