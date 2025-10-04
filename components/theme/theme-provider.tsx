@@ -25,8 +25,29 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
             setReduceMotionClass(e.matches)
         }
 
-        mediaQuery.addEventListener('change', handleChange)
-        return () => mediaQuery.removeEventListener('change', handleChange)
+        // Feature-detect modern addEventListener/removeEventListener on MediaQueryList
+        // and fall back to deprecated addListener/removeListener for older browsers.
+        interface MediaQueryListLegacy extends MediaQueryList {
+            addListener(listener: (event: MediaQueryListEvent) => void): void
+            removeListener(listener: (event: MediaQueryListEvent) => void): void
+        }
+
+        const maybeLegacy =
+            mediaQuery as unknown as Partial<MediaQueryListLegacy>
+
+        if (typeof mediaQuery.addEventListener === 'function') {
+            mediaQuery.addEventListener('change', handleChange)
+            return () => mediaQuery.removeEventListener('change', handleChange)
+        }
+
+        if (typeof maybeLegacy.addListener === 'function') {
+            // Older browsers implement addListener/removeListener
+            maybeLegacy.addListener!(handleChange)
+            return () => maybeLegacy.removeListener!(handleChange)
+        }
+
+        // As a last resort, no-op cleanup
+        return undefined
     }, [])
 
     // Ensure we disable the theme transition during toggles to avoid flash;

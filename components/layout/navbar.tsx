@@ -167,8 +167,6 @@ export default function Navbar() {
                             >
                                 <nav
                                     className="flex flex-col gap-6"
-                                    role="dialog"
-                                    aria-modal="true"
                                     aria-label="Mobile navigation"
                                 >
                                     {/* Mobile Navigation Links */}
