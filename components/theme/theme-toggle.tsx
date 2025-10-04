@@ -18,7 +18,13 @@ export default function ThemeToggle() {
     const [mounted, setMounted] = useState(false)
 
     // improve keyboard affordance and persistent aria-label
-    const toggle = () => setTheme(theme === 'light' ? 'dark' : 'light')
+    // Toggle should act on the effective/resolved theme so it behaves correctly
+    // when `theme === 'system'. Use the resolved/effective theme (which falls
+    // back to `theme` if resolvedTheme isn't available) to decide the new value.
+    const toggle = () => {
+        const resolved = resolvedTheme ?? theme
+        setTheme(resolved === 'light' ? 'dark' : 'light')
+    }
 
     useEffect(() => {
         setMounted(true)
