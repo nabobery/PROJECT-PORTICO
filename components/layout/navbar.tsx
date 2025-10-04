@@ -37,8 +37,15 @@ export default function Navbar() {
     )
 
     useEffect(() => {
-        if (typeof window === 'undefined') return
-        if (prefersReducedMotionHook) return // already true from hook
+        // Keep local state in sync with the hook so changes to the user's
+        // preference (e.g. toggling reduce-motion) immediately update UI.
+        setPrefersReducedMotion(prefersReducedMotionHook)
+
+        // Server: bail out early. If the hook already indicates reduced
+        // motion, we don't need to attach a matchMedia listener.
+        if (typeof window === 'undefined' || prefersReducedMotionHook) {
+            return
+        }
 
         const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
         const handler = () => setPrefersReducedMotion(mq.matches)
