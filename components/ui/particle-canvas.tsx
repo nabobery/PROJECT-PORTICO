@@ -77,10 +77,16 @@ export function ParticleCanvas() {
         const resizeCanvas = () => {
             const dpr = Math.max(window.devicePixelRatio || 1, 1)
             dprRef.current = dpr
+
+            // Keep the canvas backing buffer sized for DPR but use CSS 100%
+            // for layout so it always fits its positioned container and does
+            // not create horizontal overflow due to pixel rounding.
             canvas.width = Math.floor(window.innerWidth * dpr)
             canvas.height = Math.floor(window.innerHeight * dpr)
-            canvas.style.width = `${window.innerWidth}px`
-            canvas.style.height = `${window.innerHeight}px`
+            canvas.style.width = '100%'
+            canvas.style.height = '100%'
+            canvas.style.display = 'block'
+
             ctx.setTransform(1, 0, 0, 1, 0, 0)
             ctx.scale(dpr, dpr)
             initParticles()
