@@ -41,6 +41,11 @@ export function ParticleCanvas() {
         const ctx = canvas.getContext('2d')
         if (!ctx) return
 
+        // Use the resolved/effective theme so OS-driven changes (when defaultTheme="system")
+        // correctly update canvas colors and behavior. Falls back to `theme` if
+        // `resolvedTheme` is not available yet.
+        const appliedTheme = resolvedTheme ?? theme
+
         // Respect user's reduced motion preference: if reduced, render a static scene once and avoid animations/listeners
         const prefersReducedMotion =
             typeof window !== 'undefined' &&
@@ -92,7 +97,7 @@ export function ParticleCanvas() {
                 canvas.style.opacity = opacityVar
             } else {
                 // fallback: slightly translucent in dark mode, fully visible in light
-                canvas.style.opacity = theme === 'dark' ? '0.95' : '1'
+                canvas.style.opacity = appliedTheme === 'dark' ? '0.95' : '1'
             }
             canvas.style.background = 'transparent'
         }
@@ -103,13 +108,26 @@ export function ParticleCanvas() {
             const cssWidth = window.innerWidth
             const cssHeight = window.innerHeight
             const numParticles = Math.floor((cssWidth * cssHeight) / 15000)
+            // Determine an effective theme for particle color fallbacks. If the
+            // user-selected theme is 'system' and `resolvedTheme` is not available,
+            // fall back to a runtime prefers-color-scheme check so OS-driven theme
+            // switches are respected immediately.
+            const computedTheme =
+                (resolvedTheme ?? theme) === 'system'
+                    ? typeof window !== 'undefined' &&
+                      window.matchMedia &&
+                      window.matchMedia('(prefers-color-scheme: dark)').matches
+                        ? 'dark'
+                        : 'light'
+                    : (resolvedTheme ?? theme)
+
             for (let i = 0; i < numParticles; i++) {
                 particlesRef.current.push(
                     createParticle(
                         cssWidth,
                         cssHeight,
                         cssVarsRef.current.canvasParticleRgb,
-                        theme
+                        computedTheme
                     )
                 )
             }
@@ -151,7 +169,7 @@ export function ParticleCanvas() {
             // read cached CSS vars (computed on theme change)
             const primaryRgb = cssVarsRef.current.primaryRgb
             const canvasLineRgb = cssVarsRef.current.canvasLineRgb
-            const isLight = theme !== 'dark'
+            const isLight = appliedTheme !== 'dark'
 
             // Draw connections between nearby particles
             for (let i = 0; i < particles.length; i++) {
@@ -238,7 +256,10 @@ export function ParticleCanvas() {
                 }
             }
         }
-    }, [theme])
+        // Include resolvedTheme so the effect re-runs when the effective theme changes
+        // (for example, when defaultTheme="system" and the OS theme toggles).
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [theme, resolvedTheme])
 
     return (
         <canvas
