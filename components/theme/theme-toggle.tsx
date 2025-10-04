@@ -14,7 +14,7 @@ import { motion } from 'framer-motion'
  * @returns A JSX element: a themed toggle button that switches the UI theme and animates between sun and moon icons.
  */
 export default function ThemeToggle() {
-    const { theme, setTheme } = useTheme()
+    const { theme, resolvedTheme, setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
 
     // improve keyboard affordance and persistent aria-label
@@ -25,7 +25,11 @@ export default function ThemeToggle() {
     }, [])
 
     // only use theme-dependent attributes/animation after mount to avoid hydration mismatches
-    const isDark = mounted ? theme === 'dark' : false
+    // Prefer the resolvedTheme so that when `theme === 'system'` we reflect the actual
+    // effective theme (light/dark) the user sees. Fall back to `theme` if resolvedTheme
+    // is not yet available.
+    const effectiveTheme = mounted ? (resolvedTheme ?? theme) : undefined
+    const isDark = effectiveTheme === 'dark'
 
     return (
         <Button
