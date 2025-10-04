@@ -103,20 +103,6 @@ export default function Navbar() {
     // Lock scroll when mobile menu is open
     useLockScroll(isMenuOpen)
 
-    // Handle ESC key to close menu
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape' && isMenuOpen) {
-                setIsMenuOpen(false)
-            }
-        }
-
-        if (isMenuOpen) {
-            window.addEventListener('keydown', handleKeyDown)
-            return () => window.removeEventListener('keydown', handleKeyDown)
-        }
-    }, [isMenuOpen])
-
     return (
         <header
             className={cn(
