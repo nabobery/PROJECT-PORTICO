@@ -8,9 +8,11 @@ import {
     FaChartLine,
     FaFire,
     FaBookOpen,
-} from 'react-icons/fa'
+    FaRotate,
+} from 'react-icons/fa6'
 import { SiLeetcode, SiCodeforces, SiCodechef } from 'react-icons/si'
 import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 // Interfaces for API responses (will be refined)
 interface LeetCodeStats {
@@ -121,6 +123,8 @@ interface PlatformStat {
     color: string
     apiEndpoint?: string // For platforms with actual APIs
     isSubmissionCount?: boolean // To clarify if it's solved vs submissions
+    error?: string | null // Store error message per platform
+    isRetrying?: boolean // Track if currently retrying
 }
 
 const initialPlatformStats: PlatformStat[] = [
@@ -132,7 +136,6 @@ const initialPlatformStats: PlatformStat[] = [
         label: 'Problems Solved',
         profileUrl: 'https://leetcode.com/u/Nabobery/',
         color: '#FFA116',
-        // apiEndpoint: 'https://alfa-leetcode-api.onrender.com/Nabobery/solved', // Will use GraphQL directly
     },
     {
         icon: SiCodeforces,
@@ -142,7 +145,6 @@ const initialPlatformStats: PlatformStat[] = [
         label: 'Problems Solved',
         profileUrl: 'https://codeforces.com/profile/nabobery',
         color: '#1F8ACB',
-        // apiEndpoint for Codeforces will be constructed in fetch
     },
     {
         icon: SiCodechef,
@@ -152,7 +154,6 @@ const initialPlatformStats: PlatformStat[] = [
         label: 'Problems Solved',
         profileUrl: 'http://codechef.com/users/nabobery',
         color: '#D67325',
-        // apiEndpoint for CodeChef if using a public one, or handled differently
     },
     {
         icon: FaBookOpen,
@@ -165,6 +166,66 @@ const initialPlatformStats: PlatformStat[] = [
         isSubmissionCount: true,
     },
 ]
+
+// Utility function for retry logic with exponential backoff
+async function fetchWithRetry(
+    fetchFn: () => Promise<Response>,
+    maxRetries: number = 3,
+    baseDelay: number = 1000
+): Promise<Response> {
+    let lastError: Error | null = null
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+            const response = await fetchFn()
+            return response
+        } catch (error) {
+            lastError = error as Error
+            if (attempt < maxRetries) {
+                // Exponential backoff: 1s, 2s, 4s
+                const delay = baseDelay * Math.pow(2, attempt)
+                await new Promise((resolve) => setTimeout(resolve, delay))
+            }
+        }
+    }
+
+    throw lastError || new Error('Fetch failed after retries')
+}
+
+// Helper function to get user-friendly error messages
+function getUserFriendlyErrorMessage(error: any, platformName: string): string {
+    const errorMessage = error?.message || String(error)
+
+    // Handle common error scenarios
+    if (
+        errorMessage.includes('404') ||
+        errorMessage.includes('user not found')
+    ) {
+        return 'User not found'
+    }
+    if (errorMessage.includes('403')) {
+        return 'API rate limited'
+    }
+    if (
+        errorMessage.includes('500') ||
+        errorMessage.includes('502') ||
+        errorMessage.includes('503')
+    ) {
+        return 'Server unavailable'
+    }
+    if (
+        errorMessage.includes('NetworkError') ||
+        errorMessage.includes('Failed to fetch')
+    ) {
+        return 'Network error'
+    }
+    if (errorMessage.includes('timeout')) {
+        return 'Request timed out'
+    }
+
+    // Generic fallback
+    return 'Failed to load stats'
+}
 
 // Re-usable Counter component (similar to achievements)
 function Counter({ value, isInView }: { value: number; isInView: boolean }) {
@@ -251,204 +312,211 @@ export default function CompetitiveStats() {
 
     const [stats, setStats] = useState<PlatformStat[]>(initialPlatformStats)
     const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+
+    // Fetch stats for a specific platform
+    const fetchPlatformStats = async (
+        platform: PlatformStat
+    ): Promise<PlatformStat> => {
+        if (platform.platformName === 'LeetCode') {
+            try {
+                const response = await fetchWithRetry(
+                    () =>
+                        fetch(
+                            `/api/leetcode-stats?username=${platform.username}`
+                        ),
+                    3,
+                    1000
+                )
+
+                if (!response.ok) {
+                    const errorBody = await response.text()
+                    throw new Error(
+                        `API error ${response.status}: ${response.statusText}. Body: ${errorBody}`
+                    )
+                }
+                const data: LeetCodeGraphQLResponse = await response.json()
+
+                if (data.errors && data.errors.length > 0) {
+                    throw new Error(
+                        `GraphQL error: ${data.errors
+                            .map((e) => e.message)
+                            .join(', ')}`
+                    )
+                }
+
+                if (
+                    !data.data ||
+                    !data.data.userProfileUserQuestionProgressV2 ||
+                    !data.data.userProfileUserQuestionProgressV2
+                        .numAcceptedQuestions
+                ) {
+                    console.error(
+                        'LeetCode GraphQL API did not return the expected data structure. Response:',
+                        data
+                    )
+                    throw new Error(
+                        'LeetCode GraphQL API response malformed for solved count'
+                    )
+                }
+
+                const solvedCount =
+                    data.data.userProfileUserQuestionProgressV2.numAcceptedQuestions.reduce(
+                        (sum, item) => sum + item.count,
+                        0
+                    )
+
+                if (typeof solvedCount !== 'number') {
+                    console.error(
+                        'LeetCode API did not return a valid number for solved problems. Calculated sum:',
+                        solvedCount,
+                        'Original data:',
+                        data.data.userProfileUserQuestionProgressV2
+                            .numAcceptedQuestions
+                    )
+                    throw new Error(
+                        'LeetCode API response malformed for solved count (after sum)'
+                    )
+                }
+                return {
+                    ...platform,
+                    value: solvedCount,
+                    error: null,
+                    isRetrying: false,
+                }
+            } catch (e: any) {
+                console.error(
+                    `Failed to fetch LeetCode stats for ${platform.username}:`,
+                    e
+                )
+                const userFriendlyError = getUserFriendlyErrorMessage(
+                    e,
+                    platform.platformName
+                )
+                return {
+                    ...platform,
+                    value: null,
+                    error: userFriendlyError,
+                    isRetrying: false,
+                }
+            }
+        }
+
+        if (platform.platformName === 'Codeforces') {
+            try {
+                const apiUrl = `https://codeforces.com/api/user.status?handle=${platform.username}&from=1&count=10000`
+
+                const response = await fetchWithRetry(
+                    () => fetch(apiUrl),
+                    3,
+                    1000
+                )
+
+                if (!response.ok) {
+                    const errorText = await response.text()
+                    throw new Error(
+                        `API error ${response.status}: ${response.statusText}. Response: ${errorText}`
+                    )
+                }
+                const data: CodeforcesUserStatusResponse = await response.json()
+
+                if (data.status !== 'OK' || !data.result) {
+                    console.error(
+                        'Codeforces API did not return OK status or missing result. Response:',
+                        data
+                    )
+                    throw new Error(
+                        `Codeforces API error: ${
+                            data.comment ||
+                            'Unknown error or no submissions found'
+                        }`
+                    )
+                }
+
+                const solvedProblems = new Set<string>()
+                data.result.forEach((submission) => {
+                    if (submission.problem && submission.verdict === 'OK') {
+                        if (
+                            submission.problem.contestId &&
+                            submission.problem.index
+                        ) {
+                            solvedProblems.add(
+                                `${submission.problem.contestId}-${submission.problem.index}`
+                            )
+                        } else if (submission.problem.name) {
+                            solvedProblems.add(submission.problem.name)
+                        }
+                    }
+                })
+                const solvedCount = solvedProblems.size
+                return {
+                    ...platform,
+                    value: solvedCount,
+                    error: null,
+                    isRetrying: false,
+                }
+            } catch (e: any) {
+                console.error(
+                    `Failed to fetch Codeforces stats for ${platform.username}:`,
+                    e
+                )
+                const userFriendlyError = getUserFriendlyErrorMessage(
+                    e,
+                    platform.platformName
+                )
+                return {
+                    ...platform,
+                    value: null,
+                    error: userFriendlyError,
+                    isRetrying: false,
+                }
+            }
+        }
+
+        if (platform.platformName === 'CodeChef') {
+            return { ...platform, value: 96, error: null }
+        }
+
+        if (platform.platformName === 'CSES') {
+            return platform
+        }
+
+        return platform
+    }
+
+    // Retry fetch for a specific platform
+    const handleRetry = async (platformName: string) => {
+        setStats((prevStats) =>
+            prevStats.map((stat) =>
+                stat.platformName === platformName
+                    ? { ...stat, isRetrying: true, error: null }
+                    : stat
+            )
+        )
+
+        const platform = stats.find((s) => s.platformName === platformName)
+        if (!platform) return
+
+        const updatedPlatform = await fetchPlatformStats(platform)
+
+        setStats((prevStats) =>
+            prevStats.map((stat) =>
+                stat.platformName === platformName ? updatedPlatform : stat
+            )
+        )
+    }
 
     useEffect(() => {
         const fetchStats = async () => {
             setIsLoading(true)
-            setError(null)
-            // console.log(
-            //     'CompetitiveStats: Starting to fetch API data with animations active...'
-            // )
 
-            const updatedStatsPromises = initialPlatformStats.map(
-                async (platform) => {
-                    if (
-                        platform.platformName === 'LeetCode'
-                        // && platform.apiEndpoint // No longer using this
-                    ) {
-                        try {
-                            const graphqlQuery = {
-                                query: `
-                                    query userProfileUserQuestionProgressV2($userSlug: String!) {
-                                      userProfileUserQuestionProgressV2(userSlug: $userSlug) {
-                                        numAcceptedQuestions {
-                                          count
-                                          difficulty
-                                        }
-                                      }
-                                    }
-                                `,
-                                variables: {
-                                    userSlug: platform.username,
-                                },
-                            }
-
-                            // console.log(
-                            //     `Fetching LeetCode data for ${platform.username} via local API route...`
-                            // )
-                            const response = await fetch(
-                                `/api/leetcode-stats?username=${platform.username}`
-                            )
-
-                            if (!response.ok) {
-                                const errorBody = await response.text()
-                                throw new Error(
-                                    `API error ${response.status}: ${response.statusText}. Body: ${errorBody}`
-                                )
-                            }
-                            const data: LeetCodeGraphQLResponse =
-                                await response.json()
-                            // console.log('LeetCode GraphQL API Response:', data)
-
-                            if (data.errors && data.errors.length > 0) {
-                                throw new Error(
-                                    `GraphQL error: ${data.errors
-                                        .map((e) => e.message)
-                                        .join(', ')}`
-                                )
-                            }
-
-                            if (
-                                !data.data ||
-                                !data.data.userProfileUserQuestionProgressV2 ||
-                                !data.data.userProfileUserQuestionProgressV2
-                                    .numAcceptedQuestions
-                            ) {
-                                console.error(
-                                    'LeetCode GraphQL API did not return the expected data structure. Response:',
-                                    data
-                                )
-                                throw new Error(
-                                    'LeetCode GraphQL API response malformed for solved count'
-                                )
-                            }
-
-                            const solvedCount =
-                                data.data.userProfileUserQuestionProgressV2.numAcceptedQuestions.reduce(
-                                    (sum, item) => sum + item.count,
-                                    0
-                                )
-
-                            if (typeof solvedCount !== 'number') {
-                                console.error(
-                                    'LeetCode API did not return a valid number for solved problems. Calculated sum:',
-                                    solvedCount,
-                                    'Original data:',
-                                    data.data.userProfileUserQuestionProgressV2
-                                        .numAcceptedQuestions
-                                )
-                                throw new Error(
-                                    'LeetCode API response malformed for solved count (after sum)'
-                                )
-                            }
-                            return { ...platform, value: solvedCount }
-                        } catch (e: any) {
-                            console.error(
-                                `Failed to fetch LeetCode stats for ${platform.username}:`,
-                                e
-                            )
-                            setError(
-                                (prev) =>
-                                    `${prev ?? ''} LeetCode: ${e.message}. `
-                            )
-                            return { ...platform, value: null }
-                        }
-                    }
-                    if (platform.platformName === 'Codeforces') {
-                        try {
-                            const apiUrl = `https://codeforces.com/api/user.status?handle=${platform.username}&from=1&count=10000` // Fetch a large number of submissions
-                            // console.log(
-                            //     `Fetching Codeforces data from ${apiUrl}...`
-                            // )
-                            const response = await fetch(apiUrl)
-                            if (!response.ok) {
-                                const errorText = await response.text() // Try to get more details on error
-                                throw new Error(
-                                    `API error ${response.status}: ${response.statusText}. Response: ${errorText}`
-                                )
-                            }
-                            const data: CodeforcesUserStatusResponse =
-                                await response.json()
-
-                            if (data.status !== 'OK' || !data.result) {
-                                console.error(
-                                    'Codeforces API did not return OK status or missing result. Response:',
-                                    data
-                                )
-                                throw new Error(
-                                    `Codeforces API error: ${
-                                        data.comment ||
-                                        'Unknown error or no submissions found'
-                                    }`
-                                )
-                            }
-
-                            const solvedProblems = new Set<string>()
-                            data.result.forEach((submission) => {
-                                // Ensure problem exists and has necessary identifiers
-                                if (
-                                    submission.problem &&
-                                    submission.verdict === 'OK'
-                                ) {
-                                    if (
-                                        submission.problem.contestId &&
-                                        submission.problem.index
-                                    ) {
-                                        solvedProblems.add(
-                                            `${submission.problem.contestId}-${submission.problem.index}`
-                                        )
-                                    } else if (submission.problem.name) {
-                                        // Fallback to problem name if contestId/index are missing
-                                        solvedProblems.add(
-                                            submission.problem.name
-                                        )
-                                    }
-                                }
-                            })
-                            const solvedCount = solvedProblems.size
-                            // console.log(
-                            //     `Codeforces solved count for ${platform.username}: ${solvedCount}`
-                            // )
-                            return { ...platform, value: solvedCount }
-                        } catch (e: any) {
-                            console.error(
-                                `Failed to fetch Codeforces stats for ${platform.username}:`,
-                                e
-                            )
-                            setError(
-                                (prev) =>
-                                    `${prev ?? ''} Codeforces: ${e.message}. `
-                            )
-                            return { ...platform, value: null }
-                        }
-                    }
-                    if (platform.platformName === 'CodeChef') {
-                        return { ...platform, value: 96 }
-                    }
-                    if (platform.platformName === 'CSES') {
-                        return platform
-                    }
-                    return platform
-                }
+            const updatedStatsPromises = initialPlatformStats.map((platform) =>
+                fetchPlatformStats(platform)
             )
 
-            try {
-                const allStats = await Promise.all(updatedStatsPromises)
-                setStats(allStats)
-            } catch (e: any) {
-                console.error('Error processing all stats promises:', e)
-                setError(
-                    (prev) =>
-                        `${
-                            prev ?? ''
-                        } General: Failed to process all platform data. `
-                )
-            }
+            // Process all promises - individual errors are already handled per platform
+            const allStats = await Promise.all(updatedStatsPromises)
+            setStats(allStats)
             setIsLoading(false)
-            // console.log(
-            //     'CompetitiveStats: API data fetching complete with animations active.'
-            // )
         }
 
         fetchStats()
@@ -473,13 +541,8 @@ export default function CompetitiveStats() {
                 </motion.h2>
 
                 {isLoading && <LoadingSpinner />}
-                {error && (
-                    <p className="text-center text-destructive">
-                        Error loading stats: {error}
-                    </p>
-                )}
 
-                {!isLoading && !error && (
+                {!isLoading && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
                         {stats.map((stat, index) => (
                             <motion.div
@@ -495,90 +558,148 @@ export default function CompetitiveStats() {
                                     delay: 0.2 + index * 0.1,
                                 }}
                             >
-                                <a
-                                    href={stat.profileUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="h-full block"
-                                >
-                                    <Card className="border-border h-full bg-card overflow-hidden group hover:shadow-lg transition-shadow duration-300">
+                                <Card className="border-border h-full bg-card overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                                    <div
+                                        className="h-1.5"
+                                        style={{
+                                            backgroundColor: stat.color,
+                                        }}
+                                    />
+                                    <CardContent className="p-6 flex flex-col items-center text-center">
                                         <div
-                                            className="h-1.5"
+                                            className="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-transform duration-300"
                                             style={{
-                                                backgroundColor: stat.color,
+                                                backgroundColor: `${stat.color}20`,
                                             }}
-                                        />
-                                        <CardContent className="p-6 flex flex-col items-center text-center">
-                                            <div
-                                                className="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
+                                        >
+                                            <stat.icon
+                                                className="h-8 w-8"
                                                 style={{
-                                                    backgroundColor: `${stat.color}20`, // Softer background
+                                                    color: stat.color,
                                                 }}
-                                            >
-                                                <stat.icon
-                                                    className="h-8 w-8"
-                                                    style={{
-                                                        color: stat.color,
+                                            />
+                                        </div>
+
+                                        {stat.error ? (
+                                            <>
+                                                <div className="text-2xl md:text-3xl font-bold font-heading text-destructive mb-2">
+                                                    Error
+                                                </div>
+                                                <p className="text-xs text-muted-foreground mb-3">
+                                                    {stat.error}
+                                                </p>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={(e) => {
+                                                        e.preventDefault()
+                                                        handleRetry(
+                                                            stat.platformName
+                                                        )
                                                     }}
-                                                />
-                                            </div>
-                                            <h3 className="text-3xl md:text-4xl font-bold font-heading text-card-foreground flex items-baseline">
-                                                <AnimatePresence mode="wait">
-                                                    <motion.div
-                                                        key={
-                                                            stat.value !== null
-                                                                ? stat.value
-                                                                : 'loading'
-                                                        }
-                                                        initial={{
-                                                            opacity: 0,
-                                                            y: 10,
-                                                        }}
-                                                        animate={{
-                                                            opacity: 1,
-                                                            y: 0,
-                                                        }}
-                                                        exit={{
-                                                            opacity: 0,
-                                                            y: -10,
-                                                        }}
-                                                        transition={{
-                                                            duration: 0.2,
-                                                        }}
-                                                    >
-                                                        {stat.value !== null ? (
-                                                            <Counter
-                                                                value={
-                                                                    stat.value
-                                                                }
-                                                                isInView={
-                                                                    isInView
-                                                                }
-                                                            />
-                                                        ) : (
-                                                            <span className="text-muted-foreground">
-                                                                N/A
+                                                    disabled={stat.isRetrying}
+                                                    className="mt-auto"
+                                                >
+                                                    {stat.isRetrying ? (
+                                                        <>
+                                                            <motion.div
+                                                                animate={{
+                                                                    rotate: 360,
+                                                                }}
+                                                                transition={{
+                                                                    duration: 1,
+                                                                    repeat: Infinity,
+                                                                    ease: 'linear',
+                                                                }}
+                                                                className="mr-2"
+                                                            >
+                                                                <FaRotate className="h-3 w-3" />
+                                                            </motion.div>
+                                                            Retrying...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <FaRotate className="mr-2 h-3 w-3" />
+                                                            Retry
+                                                        </>
+                                                    )}
+                                                </Button>
+                                                <a
+                                                    href={stat.profileUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-xs text-primary hover:underline mt-2"
+                                                >
+                                                    View Profile
+                                                </a>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <h3 className="text-3xl md:text-4xl font-bold font-heading text-card-foreground flex items-baseline">
+                                                    <AnimatePresence mode="wait">
+                                                        <motion.div
+                                                            key={
+                                                                stat.value !==
+                                                                null
+                                                                    ? stat.value
+                                                                    : 'loading'
+                                                            }
+                                                            initial={{
+                                                                opacity: 0,
+                                                                y: 10,
+                                                            }}
+                                                            animate={{
+                                                                opacity: 1,
+                                                                y: 0,
+                                                            }}
+                                                            exit={{
+                                                                opacity: 0,
+                                                                y: -10,
+                                                            }}
+                                                            transition={{
+                                                                duration: 0.2,
+                                                            }}
+                                                        >
+                                                            {stat.value !==
+                                                            null ? (
+                                                                <Counter
+                                                                    value={
+                                                                        stat.value
+                                                                    }
+                                                                    isInView={
+                                                                        isInView
+                                                                    }
+                                                                />
+                                                            ) : (
+                                                                <span className="text-muted-foreground">
+                                                                    N/A
+                                                                </span>
+                                                            )}
+                                                        </motion.div>
+                                                    </AnimatePresence>
+                                                    {stat.value !== null &&
+                                                        !stat.isSubmissionCount && (
+                                                            <span className="text-primary ml-1">
+                                                                +
                                                             </span>
                                                         )}
-                                                    </motion.div>
-                                                </AnimatePresence>
-                                                {stat.value !== null &&
-                                                    !stat.isSubmissionCount && (
-                                                        <span className="text-primary ml-1">
-                                                            +
-                                                        </span>
-                                                    )}
-                                            </h3>
-                                            <p className="text-sm mt-1 text-muted-foreground">
-                                                {stat.label} on{' '}
-                                                {stat.platformName}
-                                            </p>
-                                            <p className="text-xs mt-2 text-muted-foreground">
-                                                @{stat.username}
-                                            </p>
-                                        </CardContent>
-                                    </Card>
-                                </a>
+                                                </h3>
+                                                <p className="text-sm mt-1 text-muted-foreground">
+                                                    {stat.label} on{' '}
+                                                    {stat.platformName}
+                                                </p>
+                                                <a
+                                                    href={stat.profileUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-xs mt-2 text-muted-foreground hover:text-primary transition-colors"
+                                                >
+                                                    @{stat.username}
+                                                </a>
+                                            </>
+                                        )}
+                                    </CardContent>
+                                </Card>
                             </motion.div>
                         ))}
                     </div>
