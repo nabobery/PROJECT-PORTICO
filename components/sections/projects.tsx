@@ -189,6 +189,16 @@ const projects: Project[] = [
         imageUrl: '/images/projects/project-war.png',
         category: ['Utilities'],
     },
+    {
+        title: 'redirect-url-extension',
+        description:
+            'Chrome extension that automatically redirects URLs based on configurable rules and regex, with a popup UI, redirect logging, and optional notifications.',
+        techStack: ['TypeScript', 'React', 'Webpack', 'Chrome Extensions API'],
+        githubLink: 'https://github.com/nabobery/redirect-url-extension',
+        liveLink: null,
+        imageUrl: '/images/projects/redirect-url-extension.png',
+        category: ['Utilities', 'Open Source'],
+    },
 ]
 
 export default function Projects() {
