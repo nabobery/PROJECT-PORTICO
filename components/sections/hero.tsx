@@ -24,10 +24,10 @@ export default function Hero() {
         if (typedRef.current) {
             const options = {
                 strings: [
+                    'Backend & AI Engineer',
+                    'Search Infrastructure Builder',
+                    'AI-Agent Systems Engineer',
                     'Problem Solver',
-                    'Full-Stack Developer',
-                    'AI/ML Engineer',
-                    'Software Architect',
                 ],
                 typeSpeed: 70,
                 backSpeed: 40,
@@ -103,10 +103,11 @@ export default function Hero() {
                             }}
                             className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0"
                         >
-                            Passionate AI/ML and Full-Stack Engineer dedicated
-                            to building intelligent, scalable solutions.
-                            Experienced in developing robust applications and
-                            systems using diverse technologies.
+                            Software Engineer with ~2 years of experience
+                            building Elasticsearch search, Kotlin/Python
+                            services, and MCP/RAG workflows. Currently at
+                            OnArrival, shipping travel infrastructure and
+                            AI-assisted booking experiences.
                         </motion.p>
 
                         <motion.div
@@ -119,7 +120,7 @@ export default function Hero() {
                             className="flex flex-wrap gap-4 justify-center md:justify-start"
                         >
                             <Button size="lg" asChild>
-                                <Link href="#projects">View My Work</Link>
+                                <Link href="#projects">View selected work</Link>
                             </Button>
                             <Button size="lg" variant="outline" asChild>
                                 <Link href="#contact">Get In Touch</Link>

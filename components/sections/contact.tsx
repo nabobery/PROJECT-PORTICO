@@ -37,9 +37,11 @@ export default function Contact() {
                                 : { opacity: 0, y: 20 }
                         }
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="text-3xl md:text-4xl font-bold mb-4 text-center font-heading"
+                        className="text-3xl md:text-4xl font-bold mb-4 text-center font-heading max-w-4xl"
                     >
-                        Get In Touch
+                        Interested in search infrastructure, backend platforms,
+                        or practical AI-agent systems? I&apos;m open to
+                        software-engineering conversations.
                     </motion.h2>
 
                     <motion.div
@@ -52,21 +54,6 @@ export default function Contact() {
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="h-1 bg-primary"
                     />
-
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={
-                            isInView
-                                ? { opacity: 1, y: 0 }
-                                : { opacity: 0, y: 20 }
-                        }
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                        className="text-muted-foreground text-center max-w-2xl mt-4"
-                    >
-                        Have a project in mind or want to discuss potential
-                        collaboration? Feel free to reach out, and I&apos;ll get
-                        back to you as soon as possible.
-                    </motion.p>
                 </div>
 
                 <div
