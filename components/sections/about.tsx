@@ -109,20 +109,15 @@ export default function About() {
                             </h3>
 
                             <p className="text-muted-foreground">
-                                I&apos;m an AI/ML and Full-Stack Software
-                                Engineer specializing in building intelligent,
-                                scalable solutions. My experience spans
-                                designing dynamic rule engines, RAG pipelines,
-                                efficient background processing, and interactive
-                                dashboards using technologies like Python, Java,
-                                React, Next.js, and TypeScript.
-                            </p>
-
-                            <p className="text-muted-foreground">
-                                I enjoy tackling complex problems, bridging the
-                                gap between robust backend systems and engaging
-                                frontend experiences, ensuring applications are
-                                performant, maintainable, and user-friendly.
+                                I&apos;m Avinash Changrani, a backend and AI
+                                engineer based in Bengaluru. I work across
+                                Kotlin, Python, Elasticsearch, and AWS to turn
+                                ambiguous product problems into dependable
+                                systems — from hotel search and multi-tenant
+                                auth to RAG pipelines and MCP-powered agent
+                                workflows. I care about measurable product
+                                outcomes, clear APIs, and production
+                                observability.
                             </p>
                         </motion.div>
 
@@ -136,14 +131,14 @@ export default function About() {
                             transition={{ duration: 0.5, delay: 0.4 }}
                             className="space-y-4"
                         >
-                            <h4 className="text-lg font-semibold">Education</h4>
+                            <h3 className="text-lg font-semibold">Education</h3>
                             <div className="space-y-4 p-4 border rounded-lg bg-background">
                                 <div className="flex items-center gap-3">
                                     <FaGraduationCap className="text-primary w-6 h-6" />
                                     <div>
-                                        <h5 className="font-semibold">
+                                        <h4 className="font-semibold">
                                             IIITDM Kancheepuram, Chennai, IN
-                                        </h5>
+                                        </h4>
                                         <p className="text-sm text-muted-foreground">
                                             Bachelor of Technology - Computer
                                             Science and Engineering
@@ -167,7 +162,7 @@ export default function About() {
                             transition={{ duration: 0.5, delay: 0.5 }}
                             className="space-y-4"
                         >
-                            <h4 className="text-lg font-semibold">Interests</h4>
+                            <h3 className="text-lg font-semibold">Interests</h3>
                             <div className="grid grid-cols-2 gap-4">
                                 {interests.map((interest, i) => (
                                     <motion.div

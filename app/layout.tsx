@@ -25,10 +25,13 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-    metadataBase: new URL('https://avinashchangrani.vercel.app'),
-    title: 'Avinash Changrani | AI & Full-Stack Developer Portfolio (PORTICO)',
+    metadataBase: new URL('https://avinashchangrani.vercel.app/'),
+    title: 'Avinash Changrani — Backend & AI Engineer | Search, MCP, Kotlin',
     description:
-        "Explore Avinash Changrani's portfolio: an AI/ML and Full-Stack Software Engineer showcasing innovative projects, expertise in Next.js, React, Python, and more. Discover insights into dynamic rule engines, RAG pipelines, and scalable software solutions.",
+        'Backend and AI engineer in Bengaluru building Elasticsearch search, Kotlin/Python services, and MCP/RAG workflows. Explore selected systems, projects, and experience.',
+    alternates: {
+        canonical: 'https://avinashchangrani.vercel.app/',
+    },
     keywords: [
         'Avinash Changrani',
         'Portfolio',
@@ -50,14 +53,14 @@ export const metadata: Metadata = {
         { name: 'Avinash Changrani', url: 'https://github.com/nabobery' },
     ],
     openGraph: {
-        title: 'Avinash Changrani | AI & Full-Stack Developer Portfolio',
+        title: 'Avinash Changrani — Backend & AI Engineer | Search, MCP, Kotlin',
         description:
-            'Discover innovative projects and expertise in AI/ML and Full-Stack development by Avinash Changrani.',
-        url: 'https://avinashchangrani.vercel.app',
+            'Backend & AI engineer building search infrastructure, reliable services, and practical AI-agent workflows.',
+        url: 'https://avinashchangrani.vercel.app/',
         siteName: "Avinash Changrani's Portfolio",
         images: [
             {
-                url: '/og-image.png',
+                url: '/og-image.jpg',
                 width: 1200,
                 height: 630,
                 alt: "Avinash Changrani's Portfolio Open Graph Image",
@@ -65,6 +68,13 @@ export const metadata: Metadata = {
         ],
         locale: 'en_US',
         type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Avinash Changrani — Backend & AI Engineer | Search, MCP, Kotlin',
+        description:
+            'Backend & AI engineer building search infrastructure, reliable services, and practical AI-agent workflows.',
+        images: ['/og-image.jpg'],
     },
     icons: {
         icon: '/portico.png',
@@ -96,6 +106,19 @@ export default function RootLayout({
 }: {
     children: React.ReactNode
 }) {
+    const personJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: 'Avinash Changrani',
+        jobTitle: 'Software Engineer',
+        url: 'https://avinashchangrani.vercel.app/',
+        sameAs: [
+            'https://github.com/nabobery',
+            'https://www.linkedin.com/in/avinash-changrani/',
+            'https://nabobery.github.io/',
+        ],
+    }
+
     return (
         <html lang="en" suppressHydrationWarning>
             <body
@@ -107,6 +130,12 @@ export default function RootLayout({
                     'bg-background font-sans antialiased'
                 )}
             >
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify(personJsonLd),
+                    }}
+                />
                 {/* Prevent theme flash on first paint: initialize class before hydration */}
                 <script
                     dangerouslySetInnerHTML={{

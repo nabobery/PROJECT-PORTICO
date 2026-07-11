@@ -150,7 +150,7 @@ const initialPlatformStats: PlatformStat[] = [
         username: 'nabobery',
         value: null, // Will be fetched or fallback
         label: 'Problems Solved',
-        profileUrl: 'http://codechef.com/users/nabobery',
+        profileUrl: 'https://www.codechef.com/users/nabobery',
         color: '#D67325',
         // apiEndpoint for CodeChef if using a public one, or handled differently
     },
@@ -235,7 +235,7 @@ function LoadingSpinner() {
                 }}
                 animate={{ rotate: 360 }}
                 transition={{
-                    loop: Infinity,
+                    repeat: Infinity,
                     ease: 'linear',
                     duration: 0.8,
                 }}
