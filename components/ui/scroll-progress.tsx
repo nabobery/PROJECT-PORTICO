@@ -19,7 +19,8 @@ export default function ScrollProgress() {
             setIsVisible(scrollPosition > 300)
         }
 
-        window.addEventListener('scroll', handleScroll)
+        handleScroll()
+        window.addEventListener('scroll', handleScroll, { passive: true })
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
@@ -31,13 +32,22 @@ export default function ScrollProgress() {
             />
 
             {isVisible && (
-                <motion.div
+                <motion.button
+                    type="button"
+                    aria-label="Back to top"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
-                    className="fixed bottom-6 right-6 bg-background shadow-lg border border-border rounded-full h-10 w-10 flex items-center justify-center cursor-pointer z-50"
+                    className="fixed bottom-6 right-6 bg-background shadow-lg border border-border rounded-full h-10 w-10 flex items-center justify-center cursor-pointer z-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() =>
-                        window.scrollTo({ top: 0, behavior: 'smooth' })
+                        window.scrollTo({
+                            top: 0,
+                            behavior: window.matchMedia(
+                                '(prefers-reduced-motion: reduce)'
+                            ).matches
+                                ? 'auto'
+                                : 'smooth',
+                        })
                     }
                 >
                     <svg
@@ -51,10 +61,11 @@ export default function ScrollProgress() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         className="text-primary"
+                        aria-hidden="true"
                     >
                         <path d="m18 15-6-6-6 6" />
                     </svg>
-                </motion.div>
+                </motion.button>
             )}
         </>
     )

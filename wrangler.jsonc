@@ -1,0 +1,14 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    // Proposed Worker name. Not yet verified as an available Cloudflare resource.
+    "name": "portico",
+    "main": "src/server.ts",
+    // Date the toolchain combination was tested. Node compatibility is implicit
+    // from 2026-08-04; the flag is kept explicitly, as in Cloudflare's guide.
+    "compatibility_date": "2026-10-25",
+    "compatibility_flags": ["nodejs_compat"],
+    "observability": { "enabled": true },
+    "upload_source_maps": true,
+    // No routes, custom domains, KV, R2, or D1. Production routing is added only
+    // in a separately approved cutover change (docs/migration/deployment.md).
+}

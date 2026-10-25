@@ -1,0 +1,538 @@
+{
+    "developer-portrait": {
+        "source": "/developer-portrait.jpeg",
+        "sha256": "0ac00a0e54b857b646204dccb6845be18f6e8ff8db9fd0c08a82349a89267413",
+        "width": 687,
+        "height": 1016,
+        "variants": {
+            "avif": [
+                {
+                    "width": 384,
+                    "height": 568,
+                    "path": "/images/generated/developer-portrait-384.avif"
+                },
+                {
+                    "width": 687,
+                    "height": 1016,
+                    "path": "/images/generated/developer-portrait-687.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 384,
+                    "height": 568,
+                    "path": "/images/generated/developer-portrait-384.webp"
+                },
+                {
+                    "width": 687,
+                    "height": 1016,
+                    "path": "/images/generated/developer-portrait-687.webp"
+                }
+            ]
+        }
+    },
+    "go-initializer": {
+        "source": "/images/projects/go-initializer.png",
+        "sha256": "af6353068a33d37897ff97a31d0314920bb11c3ba30a87c5b455fdf326de9abe",
+        "width": 1837,
+        "height": 956,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 250,
+                    "path": "/images/generated/go-initializer-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 400,
+                    "path": "/images/generated/go-initializer-768.avif"
+                },
+                {
+                    "width": 1200,
+                    "height": 624,
+                    "path": "/images/generated/go-initializer-1200.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 250,
+                    "path": "/images/generated/go-initializer-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 400,
+                    "path": "/images/generated/go-initializer-768.webp"
+                },
+                {
+                    "width": 1200,
+                    "height": 624,
+                    "path": "/images/generated/go-initializer-1200.webp"
+                }
+            ]
+        }
+    },
+    "athena": {
+        "source": "/images/projects/athena.png",
+        "sha256": "4444b694d61c7c90c634e38a599061ef7f809a2f09108150050140f796b20f5c",
+        "width": 1502,
+        "height": 868,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 277,
+                    "path": "/images/generated/athena-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 444,
+                    "path": "/images/generated/athena-768.avif"
+                },
+                {
+                    "width": 1200,
+                    "height": 693,
+                    "path": "/images/generated/athena-1200.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 277,
+                    "path": "/images/generated/athena-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 444,
+                    "path": "/images/generated/athena-768.webp"
+                },
+                {
+                    "width": 1200,
+                    "height": 693,
+                    "path": "/images/generated/athena-1200.webp"
+                }
+            ]
+        }
+    },
+    "maakavi": {
+        "source": "/images/projects/maaKaVi.png",
+        "sha256": "cf8f88be3c39c8dd35d81239f5b5266d34c75c76cd9b62cf6b61f1c0c1d1487a",
+        "width": 2880,
+        "height": 1528,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 255,
+                    "path": "/images/generated/maakavi-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 407,
+                    "path": "/images/generated/maakavi-768.avif"
+                },
+                {
+                    "width": 1200,
+                    "height": 637,
+                    "path": "/images/generated/maakavi-1200.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 255,
+                    "path": "/images/generated/maakavi-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 407,
+                    "path": "/images/generated/maakavi-768.webp"
+                },
+                {
+                    "width": 1200,
+                    "height": 637,
+                    "path": "/images/generated/maakavi-1200.webp"
+                }
+            ]
+        }
+    },
+    "attribute-pedestrian-detection": {
+        "source": "/images/projects/attribute-pedestrian-detection.png",
+        "sha256": "7738c9f86d3c0850746143738cff3e65bdc2493ffcc5018e25fa84210ac0c181",
+        "width": 1102,
+        "height": 552,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 240,
+                    "path": "/images/generated/attribute-pedestrian-detection-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 385,
+                    "path": "/images/generated/attribute-pedestrian-detection-768.avif"
+                },
+                {
+                    "width": 1102,
+                    "height": 552,
+                    "path": "/images/generated/attribute-pedestrian-detection-1102.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 240,
+                    "path": "/images/generated/attribute-pedestrian-detection-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 385,
+                    "path": "/images/generated/attribute-pedestrian-detection-768.webp"
+                },
+                {
+                    "width": 1102,
+                    "height": 552,
+                    "path": "/images/generated/attribute-pedestrian-detection-1102.webp"
+                }
+            ]
+        }
+    },
+    "before-you-sign": {
+        "source": "/images/projects/before-you-sign.png",
+        "sha256": "e80320c4da35cd4221c629ce9331c519694b264ec3bc4ca414506c48f733ae38",
+        "width": 1350,
+        "height": 647,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 230,
+                    "path": "/images/generated/before-you-sign-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 368,
+                    "path": "/images/generated/before-you-sign-768.avif"
+                },
+                {
+                    "width": 1200,
+                    "height": 575,
+                    "path": "/images/generated/before-you-sign-1200.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 230,
+                    "path": "/images/generated/before-you-sign-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 368,
+                    "path": "/images/generated/before-you-sign-768.webp"
+                },
+                {
+                    "width": 1200,
+                    "height": 575,
+                    "path": "/images/generated/before-you-sign-1200.webp"
+                }
+            ]
+        }
+    },
+    "spotify-downloader": {
+        "source": "/images/projects/spotify-downloader.png",
+        "sha256": "688e23050db126aa13350adc63dc1ea4a71d2764bb9e1eaeef71b349cf97ef68",
+        "width": 1751,
+        "height": 731,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 200,
+                    "path": "/images/generated/spotify-downloader-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 321,
+                    "path": "/images/generated/spotify-downloader-768.avif"
+                },
+                {
+                    "width": 1200,
+                    "height": 501,
+                    "path": "/images/generated/spotify-downloader-1200.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 200,
+                    "path": "/images/generated/spotify-downloader-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 321,
+                    "path": "/images/generated/spotify-downloader-768.webp"
+                },
+                {
+                    "width": 1200,
+                    "height": 501,
+                    "path": "/images/generated/spotify-downloader-1200.webp"
+                }
+            ]
+        }
+    },
+    "advent-of-code": {
+        "source": "/images/projects/advent-of-code.png",
+        "sha256": "a43ac6736f6c4eda50c25b2c2dee3c566bee653398965b2877c523103bb40675",
+        "width": 1241,
+        "height": 912,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 353,
+                    "path": "/images/generated/advent-of-code-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 564,
+                    "path": "/images/generated/advent-of-code-768.avif"
+                },
+                {
+                    "width": 1200,
+                    "height": 882,
+                    "path": "/images/generated/advent-of-code-1200.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 353,
+                    "path": "/images/generated/advent-of-code-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 564,
+                    "path": "/images/generated/advent-of-code-768.webp"
+                },
+                {
+                    "width": 1200,
+                    "height": 882,
+                    "path": "/images/generated/advent-of-code-1200.webp"
+                }
+            ]
+        }
+    },
+    "go-backend-journey": {
+        "source": "/images/projects/go-backend-journey.png",
+        "sha256": "fc31e26ba708e4edce2810589e65f0655202649d892de2cdcfc3062a508ed719",
+        "width": 1536,
+        "height": 1024,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 320,
+                    "path": "/images/generated/go-backend-journey-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 512,
+                    "path": "/images/generated/go-backend-journey-768.avif"
+                },
+                {
+                    "width": 1200,
+                    "height": 800,
+                    "path": "/images/generated/go-backend-journey-1200.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 320,
+                    "path": "/images/generated/go-backend-journey-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 512,
+                    "path": "/images/generated/go-backend-journey-768.webp"
+                },
+                {
+                    "width": 1200,
+                    "height": 800,
+                    "path": "/images/generated/go-backend-journey-1200.webp"
+                }
+            ]
+        }
+    },
+    "project-mads": {
+        "source": "/images/projects/project-mads.png",
+        "sha256": "5ac83b5d452f608a7a7a10dbab401ce9f4e935e01418e5a2aecbbf03b5d3c22e",
+        "width": 1024,
+        "height": 1024,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 480,
+                    "path": "/images/generated/project-mads-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 768,
+                    "path": "/images/generated/project-mads-768.avif"
+                },
+                {
+                    "width": 1024,
+                    "height": 1024,
+                    "path": "/images/generated/project-mads-1024.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 480,
+                    "path": "/images/generated/project-mads-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 768,
+                    "path": "/images/generated/project-mads-768.webp"
+                },
+                {
+                    "width": 1024,
+                    "height": 1024,
+                    "path": "/images/generated/project-mads-1024.webp"
+                }
+            ]
+        }
+    },
+    "exaimination": {
+        "source": "/images/projects/exAImination.png",
+        "sha256": "cd546d3144844ab732a57db2d667bc648dcb59a052b6068056b2585ce40ecad9",
+        "width": 1697,
+        "height": 828,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 234,
+                    "path": "/images/generated/exaimination-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 375,
+                    "path": "/images/generated/exaimination-768.avif"
+                },
+                {
+                    "width": 1200,
+                    "height": 586,
+                    "path": "/images/generated/exaimination-1200.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 234,
+                    "path": "/images/generated/exaimination-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 375,
+                    "path": "/images/generated/exaimination-768.webp"
+                },
+                {
+                    "width": 1200,
+                    "height": 586,
+                    "path": "/images/generated/exaimination-1200.webp"
+                }
+            ]
+        }
+    },
+    "maze-solver-using-ai": {
+        "source": "/images/projects/maze-solver-using-ai.png",
+        "sha256": "0b4aefa92cc34c33a4b3bfcee046673cbbc3254cc04a82f41324954298c5b5fb",
+        "width": 920,
+        "height": 885,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 462,
+                    "path": "/images/generated/maze-solver-using-ai-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 739,
+                    "path": "/images/generated/maze-solver-using-ai-768.avif"
+                },
+                {
+                    "width": 920,
+                    "height": 885,
+                    "path": "/images/generated/maze-solver-using-ai-920.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 462,
+                    "path": "/images/generated/maze-solver-using-ai-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 739,
+                    "path": "/images/generated/maze-solver-using-ai-768.webp"
+                },
+                {
+                    "width": 920,
+                    "height": 885,
+                    "path": "/images/generated/maze-solver-using-ai-920.webp"
+                }
+            ]
+        }
+    },
+    "project-war": {
+        "source": "/images/projects/project-war.png",
+        "sha256": "47b4a332cc7d2482c86f56577c6f3c083b08019b662a0370205dd7c3fdd91db1",
+        "width": 1024,
+        "height": 1024,
+        "variants": {
+            "avif": [
+                {
+                    "width": 480,
+                    "height": 480,
+                    "path": "/images/generated/project-war-480.avif"
+                },
+                {
+                    "width": 768,
+                    "height": 768,
+                    "path": "/images/generated/project-war-768.avif"
+                },
+                {
+                    "width": 1024,
+                    "height": 1024,
+                    "path": "/images/generated/project-war-1024.avif"
+                }
+            ],
+            "webp": [
+                {
+                    "width": 480,
+                    "height": 480,
+                    "path": "/images/generated/project-war-480.webp"
+                },
+                {
+                    "width": 768,
+                    "height": 768,
+                    "path": "/images/generated/project-war-768.webp"
+                },
+                {
+                    "width": 1024,
+                    "height": 1024,
+                    "path": "/images/generated/project-war-1024.webp"
+                }
+            ]
+        }
+    }
+}
