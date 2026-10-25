@@ -8,28 +8,56 @@ This repository hosts the codebase for my interactive portfolio website. PORTICO
 
 ## Tech Stack 🛠️
 
-This project leverages a modern tech stack to deliver a high-performance, visually appealing, and maintainable website.
+- **[TanStack Start](https://tanstack.com/start) with React and TypeScript.** The homepage is prerendered to static HTML at build time; the rest is server-rendered.
+- **[Cloudflare Workers](https://developers.cloudflare.com/workers/) with Static Assets**, through the direct `@cloudflare/vite-plugin`. Local development and preview run in workerd, the Workers runtime.
+- **[Tailwind CSS 4](https://tailwindcss.com/)** through `@tailwindcss/vite`.
+- **[Vite+](https://viteplus.dev/)** (`vp`): Vite 8, Oxlint with type-aware checks, Oxfmt, and Vitest. Playwright runs the browser tests.
+- **Node.js 24.22.1** and **pnpm 11.28.8** for local and CI builds (`.node-version`, `packageManager`). Production runs in workerd, not Node.
 
-- **[Next.js](https://nextjs.org/) (v15.3.1 with TypeScript):** The core framework for this portfolio. Next.js was chosen for several key reasons:
-    - 🚀 **Performance:** Server-Side Rendering (SSR) and Static Site Generation (SSG) enable lightning-fast page loads, crucial for a great user experience and making a strong first impression.
-    - 🔍 **SEO Optimization:** Next.js provides excellent SEO capabilities out-of-the-box, making the portfolio easily discoverable by search engines.
-    - 💻 **Developer Experience:** Features like file-system routing, API routes, and optimized image components (via `next/image`) streamline the development process, allowing for rapid iteration.
-    - ⚛️ **Rich React Ecosystem:** Leverages the power of React to build dynamic, interactive, and reusable UI components, perfect for showcasing projects in an engaging way.
-    - 🔒 **TypeScript Support:** Enhances code quality, readability, and maintainability through static typing, leading to a more robust application.
+The migration from Next.js is documented in [docs/plans/](docs/plans/) and [docs/migration/](docs/migration/). Vercel serves production until a separately approved cutover.
 
-- **[Tailwind CSS](https://tailwindcss.com/) (v3.3.0):** A utility-first CSS framework used for styling. Tailwind CSS allows for rapid UI development and highly customizable designs without writing custom CSS. Its utility classes make it easy to create responsive and modern interfaces.
+## Local development
 
-- **[Vercel](https://vercel.com/):** The platform used for deploying the website. Vercel offers seamless integration with Next.js, providing a fast and reliable deployment pipeline, automatic HTTPS, and global CDN for optimal performance.
+Prerequisites: Node 24.22.1 and pnpm 11.28.8 (for example `corepack enable` or `vp env use`).
+
+```sh
+pnpm install          # installs dependencies; approved build scripts: esbuild, sharp, workerd
+pnpm dev              # http://localhost:5173 in workerd, with HMR
+```
+
+| Command | What it does |
+| --- | --- |
+| `pnpm check` | Format check, lint, and type-aware lint (`vp check`). Changes nothing. |
+| `pnpm exec vp check --fix` | Applies formatting and lint fixes. |
+| `pnpm typecheck` | `tsc --noEmit`. |
+| `pnpm test` | Unit tests (`vp test run`). |
+| `pnpm build` | Verifies prepared images, writes robots/sitemap/headers, and builds the **preview** variant (`noindex`). |
+| `pnpm build:production` | Same, for the indexable production variant. |
+| `pnpm preview` | Serves `dist/` in workerd on `http://127.0.0.1:4173`. |
+| `pnpm test:e2e` | Playwright against `pnpm preview`. Build first. Set `PORTICO_EXPECT_ENV=production` after `build:production`. |
+| `pnpm images` | Regenerates responsive image derivatives after a source image changes. |
+| `pnpm cf-typegen` | Generates Worker types (`worker-configuration.d.ts`, git-ignored). |
+
+The pre-commit hook runs `pnpm check` and `pnpm typecheck`.
+
+## Content and media
+
+- Portfolio data lives in typed modules: `src/content/projects.ts`, `src/content/experience.ts`, and `src/content/competitive-stats.ts`. Copy changes go through [docs/migration/content-decisions.md](docs/migration/content-decisions.md).
+- Competitive-programming numbers are a dated snapshot. Each value is either recorded with a date and evidence or shown as "Not available". The page makes no requests to the platforms.
+- To add or change an image: put the source file under `public/`, add or update its entry (with accurate alt text) in `src/content/media-sources.ts`, run `pnpm images`, and commit the source, `public/images/generated/`, and `src/content/media.generated.json`. `pnpm build` fails if they are out of date.
+- `/api/leetcode-stats?username=nabobery` remains as a compatibility endpoint backed by the snapshot.
+
+## Deployment
+
+See [docs/migration/deployment.md](docs/migration/deployment.md) for the preview and production procedure and [docs/migration/rollback.md](docs/migration/rollback.md) for rollback. Nothing deploys automatically from this repository.
 
 ## Project Structure 📁
 
-The codebase is organized to promote modularity and maintainability. Key directories include:
-
-- `components/`: Contains reusable UI components, further organized into:
-    - `sections/`: Larger page sections (e.g., Hero, About Me, Projects).
-    - `ui/`: Atomic UI elements (e.g., buttons, cards, inputs).
-    - `theme/`: Components related to theming (e.g., theme toggler).
-    - `layout/`: Structural components like headers, footers, and page layouts.
+- `src/routes/`: TanStack Start routes (`__root.tsx` document shell, `index.tsx` homepage, `api/`).
+- `src/content/`, `src/lib/`: typed content, media manifest, and site/SEO configuration.
+- `components/`: reusable UI components, organized into `sections/`, `ui/`, `theme/`, and `layout/`.
+- `scripts/`: image preparation and SEO file generation.
+- `tests/e2e/`: Playwright tests.
 
 ## Live 🌐
 
