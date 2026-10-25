@@ -12,6 +12,8 @@
 
 This is a future implementation procedure. Every task and acceptance checkbox below is pending. The current authorization covers cloning and writing documentation only. Do not execute package installations, source changes, commits, PR actions, deployments, credential setup, or DNS changes from this plan without a later request.
 
+> **Implementation status, 25 October 2026.** A later request authorized local and CI implementation, dependency installation, commits, pushing `feat/portico-tanstack-cloudflare`, and opening the implementation PR. It did not authorize deployments, DNS, credentials, or account changes. Tasks 1 to 13 are implemented on that branch; Tasks 14 and 15 are prepared as documents only. Evidence and deviations are in `docs/migration/`: [baseline](../migration/baseline.md), [content decisions](../migration/content-decisions.md), [toolchain proof](../migration/toolchain-proof.md), [validation](../migration/validation.md), [deployment](../migration/deployment.md), and [rollback](../migration/rollback.md). The text below is the original procedure, kept unchanged; where implementation differs, the migration documents record what was done and why.
+
 Read [the dated research record](2026-10-25-portico-migration-research.md) for repository facts, PR SHAs, current primary sources, Fleet identity evidence, and skill provenance. The inspected checkout is `/data/agent/projects/PROJECT-PORTICO`, `main`, `58f8827934cbc9fefb77d1fb7e43bbdfb73a3df7`, on `personal-dev-01`. No application validation has run.
 
 ## Keep the agreed scope

@@ -121,3 +121,14 @@ Additional guidance read includes `unslop`, `verification-before-completion`, Fl
 The plan is a how-to for a skilled engineer who lacks repository context. This file is its evidence reference. The user supplied the scope and requested the complete document, so no extra outline-approval round is introduced. The writing-plans header, exact paths, short steps, dependencies, and expected validation outcomes apply. Its suggested worktree, commits, subagents, and execution handoff do not expand this documentation-only authorization.
 
 Only this research record and the linked plan are task deliverables. No app dependencies, implementation, commit, push, PR mutation, deployment, DNS change, or credential enrollment is authorized or performed by this task.
+
+## Implementation addendum, 25 October 2026
+
+This section was added when the migration was implemented. The sections above are unchanged.
+
+- **Environment.** Implementation ran in a cloud session container (`/home/user/PROJECT-PORTICO`), not on `personal-dev-01`. Main and all PR heads were refreshed through the GitHub API and matched the table above.
+- **Tested facts that replace untested recommendations.** The selected combination (Node 24.22.1, pnpm 11.28.8, vite-plus 1.4.0 with Vite 8.3.5 and Vitest 5.0.5, TanStack Start 1.169.4, Router 1.170.46, `@cloudflare/vite-plugin` 1.65.0, Wrangler 4.152.0) passed the Gate A proof. See [toolchain-proof.md](../migration/toolchain-proof.md).
+- **Network findings.** `nodejs.org`, Google Fonts, `avinashchangrani.vercel.app`, and `nabobery.dev` are unreachable from this environment. The Next build fails here without Google Fonts, which supports removing build-time font downloads. Node 24 was installed from the official `node-linux-x64` npm package.
+- **New code facts.** The OG PNG on main is 1536 × 1024, not the 1200 × 630 its metadata claims. With reduced motion, the Next navbar logo and links stay invisible. Headings never received Space Grotesk in production. Details: [baseline.md](../migration/baseline.md).
+- **Adaptations.** Vitest must not load the Cloudflare and Start plugins. pnpm 11 needs `allowBuilds` for esbuild, sharp, and workerd. A custom `src/server.ts` adds preview `X-Robots-Tag` to Worker responses; a generated `_headers` covers static responses.
+- **Still unverified.** Cloudflare account state, Worker name availability, Worker Previews against a real account, DNS and Vercel configuration, FormSubmit delivery, and all content claims listed in [content-decisions.md](../migration/content-decisions.md).
