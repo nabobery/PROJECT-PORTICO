@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { experiences } from '@/src/content/experience'
@@ -9,6 +9,8 @@ import { experiences } from '@/src/content/experience'
 export default function Experience() {
     const ref = useRef(null)
     const isInView = useInView(ref, { once: false, amount: 0.2 })
+    // MotionConfig only removes transform/layout motion; stop the endless glow too.
+    const shouldReduceMotion = useReducedMotion()
 
     return (
         <section id="experience" className="py-20">
@@ -116,7 +118,9 @@ export default function Experience() {
                                     boxShadow: {
                                         duration: 1.5, // Duration for one full pulse
                                         delay: 0.15 + index * 0.2 + 0.4, // Start after dot appears
-                                        repeat: Infinity, // Loop the pulse
+                                        repeat: shouldReduceMotion
+                                            ? 0
+                                            : Infinity, // Loop the pulse
                                         ease: 'easeInOut',
                                     },
                                 }}

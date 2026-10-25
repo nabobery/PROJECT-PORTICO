@@ -240,6 +240,19 @@ test.describe('reduced motion', () => {
         await expect(page.locator('.typed-cursor')).toHaveCount(0)
         expect(await page.locator('body > .ripple').count()).toBe(0)
     })
+
+    test('the experience timeline glow does not loop', async ({ page }) => {
+        await page.goto('/')
+        await revealSection(page, 'experience')
+        const dot = page.locator('#experience .rounded-full.bg-primary').first()
+        await page.waitForTimeout(2500)
+        const first = await dot.evaluate((el) => getComputedStyle(el).boxShadow)
+        await page.waitForTimeout(600)
+        const second = await dot.evaluate(
+            (el) => getComputedStyle(el).boxShadow
+        )
+        expect(second).toBe(first)
+    })
 })
 
 test.describe('without JavaScript', () => {
