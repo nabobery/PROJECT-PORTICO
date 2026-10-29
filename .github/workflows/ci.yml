@@ -1,0 +1,76 @@
+name: CI
+
+on:
+    pull_request:
+    push:
+        branches: [main]
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    verify:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 25
+        env:
+            CI: 'true'
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            # Installs the Vite+ version from package.json, the exact Node.js
+            # release in .node-version, and pnpm from packageManager. The single
+            # dependency install is the explicit frozen step below.
+            - uses: voidzero-dev/setup-vp@cab1ab9eaff52d4857875f4f2c016e36af8f2c76 # v1.22.0
+              with:
+                  node-version-file: .node-version
+                  cache: true
+                  run-install: false
+
+            - name: Install dependencies (frozen lockfile)
+              run: vp install --frozen-lockfile
+
+            - name: Toolchain versions
+              run: |
+                  node --version
+                  vp exec pnpm --version
+                  vp exec vp toolchain
+
+            - name: Static checks (format, lint, type-aware lint)
+              run: vp run check
+
+            - name: Type check (tsc, kept until parity with vp check is shown)
+              run: vp run typecheck
+
+            - name: Unit tests
+              run: vp run test
+
+            - name: Build (preview variant, noindex)
+              run: vp run build
+
+            - name: Install Chromium for browser tests
+              run: vp exec playwright install --with-deps chromium
+
+            - name: Browser tests against the local Cloudflare preview
+              run: vp run test:e2e
+
+            - name: Build and verify the production variant metadata
+              run: |
+                  PORTICO_DEPLOY_ENV=production vp run build
+                  PORTICO_EXPECT_ENV=production vp exec playwright test tests/e2e/metadata.spec.ts --project=desktop-chromium
+
+            - name: Checks must not modify tracked files
+              run: git diff --exit-code
+
+            - name: Upload Playwright report
+              if: ${{ !cancelled() }}
+              uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+              with:
+                  name: playwright-report
+                  path: playwright-report/
+                  retention-days: 14

@@ -2,7 +2,6 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import Image from 'next/image'
 import { FaArrowRight, FaBookOpen, FaClock } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
@@ -122,11 +121,13 @@ export default function Blog() {
                         >
                             <Card className="overflow-hidden h-full group">
                                 <div className="relative h-48">
-                                    <Image
+                                    {/* Disabled section: remote placeholder images, not prepared media. */}
+                                    <img
                                         src={post.image}
                                         alt={post.title}
-                                        fill
-                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                        loading="lazy"
+                                        decoding="async"
+                                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                 </div>
 

@@ -1,2 +1,3 @@
-npm run lint --fix # Runs ESLint with auto-fixing
-npx lint-staged # Runs lint-staged, which includes Prettier
+# Non-mutating checks before each commit. Fix formatting with `pnpm exec vp check --fix`.
+pnpm check
+pnpm typecheck
