@@ -3,6 +3,10 @@
 import { useEffect, useRef } from 'react'
 import { useTheme } from 'next-themes'
 
+// Bounds for animation work on large or high-density screens.
+const MAX_DPR = 2
+const MAX_PARTICLES = 120
+
 type Particle = {
     x: number
     y: number
@@ -75,7 +79,10 @@ export function ParticleCanvas() {
         }
 
         const resizeCanvas = () => {
-            const dpr = Math.max(window.devicePixelRatio || 1, 1)
+            const dpr = Math.min(
+                Math.max(window.devicePixelRatio || 1, 1),
+                MAX_DPR
+            )
             dprRef.current = dpr
 
             // Keep the canvas backing buffer sized for DPR but use CSS 100%
@@ -113,7 +120,10 @@ export function ParticleCanvas() {
             // compute particle count using CSS pixels for stability across DPR
             const cssWidth = window.innerWidth
             const cssHeight = window.innerHeight
-            const numParticles = Math.floor((cssWidth * cssHeight) / 15000)
+            const numParticles = Math.min(
+                MAX_PARTICLES,
+                Math.floor((cssWidth * cssHeight) / 15000)
+            )
             // Determine an effective theme for particle color fallbacks. If the
             // user-selected theme is 'system' and `resolvedTheme` is not available,
             // fall back to a runtime prefers-color-scheme check so OS-driven theme
@@ -139,7 +149,9 @@ export function ParticleCanvas() {
             }
         }
 
+        let running = false
         const render = () => {
+            if (!running) return
             // clear using CSS pixel dimensions because the context is scaled by DPR
             const cssClearWidth = canvas.width / dprRef.current
             const cssClearHeight = canvas.height / dprRef.current
@@ -226,6 +238,20 @@ export function ParticleCanvas() {
             }
         }
 
+        // Animate only while the canvas is on screen and the tab is visible.
+        let visible = true
+        let observer: IntersectionObserver | null = null
+        const updateRunning = () => {
+            const shouldRun = visible && document.visibilityState === 'visible'
+            if (shouldRun && !running) {
+                running = true
+                animationRef.current = requestAnimationFrame(render)
+            } else if (!shouldRun && running) {
+                running = false
+                cancelAnimationFrame(animationRef.current)
+            }
+        }
+
         // Defer reading CSS vars and initialization to next frame so theme class (from next-themes)
         // can be applied to document.documentElement before we sample computed styles.
         let initRaf = 0
@@ -238,8 +264,14 @@ export function ParticleCanvas() {
                 resizeCanvas()
                 // apply client-only styles to avoid hydration mismatch
                 applyCanvasStyles()
-                render()
                 startedRef.current = true
+                observer = new IntersectionObserver(([entry]) => {
+                    visible = entry?.isIntersecting ?? true
+                    updateRunning()
+                })
+                observer.observe(canvas)
+                document.addEventListener('visibilitychange', updateRunning)
+                updateRunning()
             } else {
                 // reduced motion: draw a single frame without animation
                 resizeCanvas()
@@ -257,6 +289,9 @@ export function ParticleCanvas() {
             if (!prefersReducedMotion) {
                 window.removeEventListener('resize', resizeCanvas)
                 window.removeEventListener('mousemove', handleMouseMove)
+                document.removeEventListener('visibilitychange', updateRunning)
+                observer?.disconnect()
+                running = false
                 if (startedRef.current) {
                     cancelAnimationFrame(animationRef.current)
                 }

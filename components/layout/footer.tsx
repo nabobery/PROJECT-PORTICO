@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import {
     FaCode,
     FaGithub,
@@ -22,14 +21,14 @@ export default function Footer() {
                             asChild
                             className="rounded-full h-10 w-10"
                         >
-                            <Link
+                            <a
                                 href="https://github.com/nabobery/"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="GitHub"
                             >
                                 <FaGithub className="h-5 w-5" />
-                            </Link>
+                            </a>
                         </Button>
                         <Button
                             variant="ghost"
@@ -37,14 +36,14 @@ export default function Footer() {
                             asChild
                             className="rounded-full h-10 w-10"
                         >
-                            <Link
+                            <a
                                 href="https://linkedin.com/in/avinash-changrani"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="LinkedIn"
                             >
                                 <FaLinkedinIn className="h-5 w-5" />
-                            </Link>
+                            </a>
                         </Button>
                         <Button
                             variant="ghost"
@@ -52,14 +51,14 @@ export default function Footer() {
                             asChild
                             className="rounded-full h-10 w-10"
                         >
-                            <Link
+                            <a
                                 href="https://nabobery.github.io/"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="Blog/Personal Site"
                             >
                                 <FaRss className="h-5 w-5" />
-                            </Link>
+                            </a>
                         </Button>
                         <Button
                             variant="ghost"
@@ -67,12 +66,12 @@ export default function Footer() {
                             asChild
                             className="rounded-full h-10 w-10"
                         >
-                            <Link
+                            <a
                                 href="mailto:avinashchangrani99@gmail.com"
                                 aria-label="Email"
                             >
                                 <FaEnvelope className="h-5 w-5" />
-                            </Link>
+                            </a>
                         </Button>
                     </div>
                     <div className="text-muted-foreground text-sm text-center">

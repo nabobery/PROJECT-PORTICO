@@ -1,0 +1,14 @@
+# Configuration-only workspace file: PORTICO is a single package, not a monorepo.
+# The overrides keep every dependency on the Vite core and Vitest bundled with
+# vite-plus (see https://viteplus.dev/guide/local-cli#manual-installation).
+# Update both pins together whenever vite-plus is upgraded; check the bundled
+# Vitest version with `pnpm exec vp toolchain`.
+overrides:
+    vite@*: npm:@voidzero-dev/vite-plus-core@1.4.0
+    vitest@*: 5.0.5
+
+# Packages allowed to run install scripts. Everything else is blocked by pnpm.
+allowBuilds:
+    esbuild: true
+    sharp: true
+    workerd: true

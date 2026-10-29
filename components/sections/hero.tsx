@@ -1,12 +1,18 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import Typed from 'typed.js'
-import Link from 'next/link'
 import { FaArrowDown, FaTerminal } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import { ParticleCanvas } from '@/components/ui/particle-canvas'
+
+const ROLES = [
+    'Problem Solver',
+    'Full-Stack Developer',
+    'AI/ML Engineer',
+    'Software Architect',
+] as const
 
 /**
  * Render the hero section of the homepage with background particles, an animated intro badge, a typed-role headline, descriptive text, and action buttons.
@@ -19,28 +25,28 @@ export default function Hero() {
     const typedRef = useRef<HTMLSpanElement>(null)
     const typedInstance = useRef<Typed | null>(null)
     const shouldReduceMotion = useReducedMotion()
+    const [isTyping, setIsTyping] = useState(false)
 
     useEffect(() => {
-        if (typedRef.current) {
-            const options = {
-                strings: [
-                    'Problem Solver',
-                    'Full-Stack Developer',
-                    'AI/ML Engineer',
-                    'Software Architect',
-                ],
-                typeSpeed: 70,
-                backSpeed: 40,
-                backDelay: 1200,
-                loop: true,
-                cursorChar: '|',
-            }
-            typedInstance.current = new Typed(typedRef.current, options)
-        }
+        // The server renders ROLES[0] as static text so the headline is
+        // complete before (and without) JavaScript. Typing starts only on the
+        // client and only when the user has not asked for reduced motion.
+        if (!typedRef.current || shouldReduceMotion) return
+        typedInstance.current = new Typed(typedRef.current, {
+            strings: [...ROLES],
+            typeSpeed: 70,
+            backSpeed: 40,
+            backDelay: 1200,
+            loop: true,
+            cursorChar: '|',
+        })
+        setIsTyping(true)
         return () => {
             typedInstance.current?.destroy()
+            typedInstance.current = null
+            setIsTyping(false)
         }
-    }, [])
+    }, [shouldReduceMotion])
 
     return (
         <section
@@ -90,6 +96,7 @@ export default function Hero() {
                         >
                             Hi, I&apos;m Avinash, <br className="md:hidden" />a{' '}
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                                {!isTyping && <span>{ROLES[0]}</span>}
                                 <span ref={typedRef}></span>
                             </span>
                         </motion.h1>
@@ -119,10 +126,10 @@ export default function Hero() {
                             className="flex flex-wrap gap-4 justify-center md:justify-start"
                         >
                             <Button size="lg" asChild>
-                                <Link href="#projects">View My Work</Link>
+                                <a href="#projects">View My Work</a>
                             </Button>
                             <Button size="lg" variant="outline" asChild>
-                                <Link href="#contact">Get In Touch</Link>
+                                <a href="#contact">Get In Touch</a>
                             </Button>
                         </motion.div>
                     </div>
@@ -138,7 +145,7 @@ export default function Hero() {
                 }}
                 className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20"
             >
-                <Link href="#about" aria-label="Scroll down">
+                <a href="#about" aria-label="Scroll down">
                     <motion.div
                         animate={
                             shouldReduceMotion ? { y: 0 } : { y: [0, 8, 0] }
@@ -155,7 +162,7 @@ export default function Hero() {
                     >
                         <FaArrowDown className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors" />
                     </motion.div>
-                </Link>
+                </a>
             </motion.div>
         </section>
     )

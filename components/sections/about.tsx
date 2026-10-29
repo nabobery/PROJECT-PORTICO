@@ -2,7 +2,6 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import Image from 'next/image'
 import {
     FaCalendarAlt,
     FaCode,
@@ -11,7 +10,7 @@ import {
     FaBriefcase,
     FaHeart,
 } from 'react-icons/fa'
-import { Progress } from '@/components/ui/progress'
+import { ResponsiveImage } from '@/components/ui/responsive-image'
 
 const interests = [
     { icon: FaCode, label: 'Open Source' },
@@ -83,11 +82,9 @@ export default function About() {
                     >
                         <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/10 to-primary/30 p-1">
                             <div className="absolute inset-0 bg-grid-pattern opacity-10" />
-                            <Image
-                                src="./developer-portrait.jpeg"
-                                alt="Developer portrait"
-                                width={400}
-                                height={400}
+                            <ResponsiveImage
+                                mediaId="developer-portrait"
+                                sizes="(min-width: 640px) 384px, calc(100vw - 2rem)"
                                 className="rounded-lg w-full h-auto object-cover"
                             />
                         </div>
@@ -136,14 +133,14 @@ export default function About() {
                             transition={{ duration: 0.5, delay: 0.4 }}
                             className="space-y-4"
                         >
-                            <h4 className="text-lg font-semibold">Education</h4>
+                            <h3 className="text-lg font-semibold">Education</h3>
                             <div className="space-y-4 p-4 border rounded-lg bg-background">
                                 <div className="flex items-center gap-3">
                                     <FaGraduationCap className="text-primary w-6 h-6" />
                                     <div>
-                                        <h5 className="font-semibold">
+                                        <h4 className="font-semibold">
                                             IIITDM Kancheepuram, Chennai, IN
-                                        </h5>
+                                        </h4>
                                         <p className="text-sm text-muted-foreground">
                                             Bachelor of Technology - Computer
                                             Science and Engineering
@@ -167,7 +164,7 @@ export default function About() {
                             transition={{ duration: 0.5, delay: 0.5 }}
                             className="space-y-4"
                         >
-                            <h4 className="text-lg font-semibold">Interests</h4>
+                            <h3 className="text-lg font-semibold">Interests</h3>
                             <div className="grid grid-cols-2 gap-4">
                                 {interests.map((interest, i) => (
                                     <motion.div

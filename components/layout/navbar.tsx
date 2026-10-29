@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { FaAlignRight, FaCode } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import {
@@ -27,53 +26,10 @@ const navItems = [
 ]
 
 export default function Navbar() {
-    // Respect user preference for reduced motion. Framer Motion provides
-    // `useReducedMotion()` which returns a boolean; as a fallback (SSR-safe)
-    // we check matchMedia in an effect when needed. We'll use the hook value
-    // and fall back to a window matchMedia check to be defensive.
-    const prefersReducedMotionHook = useReducedMotion()
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(
-        prefersReducedMotionHook
-    )
-
-    useEffect(() => {
-        // Keep local state in sync with the hook so changes to the user's
-        // preference (e.g. toggling reduce-motion) immediately update UI.
-        setPrefersReducedMotion(prefersReducedMotionHook)
-
-        // Server: bail out early. If the hook already indicates reduced
-        // motion, we don't need to attach a matchMedia listener.
-        if (typeof window === 'undefined' || prefersReducedMotionHook) {
-            return
-        }
-
-        const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-        const handler = () => setPrefersReducedMotion(mq.matches)
-
-        handler()
-        try {
-            if (typeof mq.addEventListener === 'function') {
-                mq.addEventListener('change', handler)
-            } else if (typeof (mq as any).addListener === 'function') {
-                // addListener is deprecated; keep as a fallback for older browsers
-                ;(mq as any).addListener(handler)
-            }
-        } catch (e) {
-            // ignore - defensive for older browsers
-        }
-
-        return () => {
-            try {
-                if (typeof mq.removeEventListener === 'function') {
-                    mq.removeEventListener('change', handler)
-                } else if (typeof (mq as any).removeListener === 'function') {
-                    ;(mq as any).removeListener(handler)
-                }
-            } catch (e) {
-                // ignore
-            }
-        }
-    }, [prefersReducedMotionHook])
+    // Entrance animations always carry their props; MotionConfig in the root
+    // (reducedMotion="user") removes the movement for reduced-motion users.
+    // Swapping props after hydration left elements stuck at opacity 0.
+    const prefersReducedMotion = useReducedMotion()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [scrollPosition, setScrollPosition] = useState(0)
@@ -115,39 +71,35 @@ export default function Navbar() {
             <div className="container mx-auto px-4 md:px-6 safe-area">
                 <nav className="flex items-center justify-between overflow-visible">
                     {/* Logo */}
-                    <Link
+                    <a
                         href="#"
                         className="text-xl font-bold flex items-center gap-2 font-heading"
                     >
                         <motion.div
-                            {...(!prefersReducedMotion
-                                ? {
-                                      initial: { scale: 0 },
-                                      animate: { scale: 1 },
-                                      transition: {
-                                          type: 'spring',
-                                          stiffness: 260,
-                                          damping: 20,
-                                          delay: 0.1,
-                                      },
-                                  }
-                                : {})}
+                            {...{
+                                initial: { scale: 0 },
+                                animate: { scale: 1 },
+                                transition: {
+                                    type: 'spring',
+                                    stiffness: 260,
+                                    damping: 20,
+                                    delay: 0.1,
+                                },
+                            }}
                             className="relative"
                         >
                             <FaCode className="h-8 w-8 text-primary" />
                         </motion.div>
                         <motion.span
-                            {...(!prefersReducedMotion
-                                ? {
-                                      initial: { opacity: 0, x: -20 },
-                                      animate: { opacity: 1, x: 0 },
-                                      transition: { delay: 0.2, duration: 0.5 },
-                                  }
-                                : {})}
+                            {...{
+                                initial: { opacity: 0, x: -20 },
+                                animate: { opacity: 1, x: 0 },
+                                transition: { delay: 0.2, duration: 0.5 },
+                            }}
                         >
                             Avinash Changrani
                         </motion.span>
-                    </Link>
+                    </a>
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center gap-8">
@@ -155,15 +107,13 @@ export default function Navbar() {
                             {navItems.map((item, i) => (
                                 <motion.li
                                     key={item.name}
-                                    {...(!prefersReducedMotion
-                                        ? {
-                                              initial: { opacity: 0, y: -10 },
-                                              animate: { opacity: 1, y: 0 },
-                                              transition: { delay: 0.1 * i },
-                                          }
-                                        : {})}
+                                    {...{
+                                        initial: { opacity: 0, y: -10 },
+                                        animate: { opacity: 1, y: 0 },
+                                        transition: { delay: 0.1 * i },
+                                    }}
                                 >
-                                    <Link
+                                    <a
                                         href={item.href}
                                         className={cn(
                                             'text-sm font-medium relative hover:text-primary transition-colors',
@@ -184,24 +134,22 @@ export default function Navbar() {
                                                               'activeSection',
                                                       })}
                                                 className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
-                                                {...(!prefersReducedMotion
-                                                    ? {
-                                                          transition: {
-                                                              type: 'spring',
-                                                              stiffness: 380,
-                                                              damping: 30,
-                                                          },
-                                                      }
-                                                    : {})}
+                                                {...{
+                                                    transition: {
+                                                        type: 'spring',
+                                                        stiffness: 380,
+                                                        damping: 30,
+                                                    },
+                                                }}
                                             />
                                         )}
-                                    </Link>
+                                    </a>
                                 </motion.li>
                             ))}
                         </ul>
                         <ThemeToggle />
                         <Button asChild>
-                            <Link href="#contact">Get in Touch</Link>
+                            <a href="#contact">Get in Touch</a>
                         </Button>
                     </div>
 
@@ -241,23 +189,21 @@ export default function Navbar() {
                                         {navItems.map((item, i) => (
                                             <motion.li
                                                 key={item.name}
-                                                {...(!prefersReducedMotion
-                                                    ? {
-                                                          initial: {
-                                                              opacity: 0,
-                                                              x: -10,
-                                                          },
-                                                          animate: {
-                                                              opacity: 1,
-                                                              x: 0,
-                                                          },
-                                                          transition: {
-                                                              delay: 0.05 * i,
-                                                          },
-                                                      }
-                                                    : {})}
+                                                {...{
+                                                    initial: {
+                                                        opacity: 0,
+                                                        x: -10,
+                                                    },
+                                                    animate: {
+                                                        opacity: 1,
+                                                        x: 0,
+                                                    },
+                                                    transition: {
+                                                        delay: 0.05 * i,
+                                                    },
+                                                }}
                                             >
-                                                <Link
+                                                <a
                                                     href={item.href}
                                                     className={cn(
                                                         'block py-3 text-lg font-medium text-center hover:text-primary transition-colors',
@@ -273,25 +219,23 @@ export default function Navbar() {
                                                     }
                                                 >
                                                     {item.name}
-                                                </Link>
+                                                </a>
                                             </motion.li>
                                         ))}
                                         <motion.li
-                                            {...(!prefersReducedMotion
-                                                ? {
-                                                      initial: {
-                                                          opacity: 0,
-                                                          x: -10,
-                                                      },
-                                                      animate: {
-                                                          opacity: 1,
-                                                          x: 0,
-                                                      },
-                                                      transition: {
-                                                          delay: 0.3,
-                                                      },
-                                                  }
-                                                : {})}
+                                            {...{
+                                                initial: {
+                                                    opacity: 0,
+                                                    x: -10,
+                                                },
+                                                animate: {
+                                                    opacity: 1,
+                                                    x: 0,
+                                                },
+                                                transition: {
+                                                    delay: 0.3,
+                                                },
+                                            }}
                                             className="mt-2"
                                         >
                                             <Button
@@ -301,9 +245,9 @@ export default function Navbar() {
                                                     setIsMenuOpen(false)
                                                 }
                                             >
-                                                <Link href="#contact">
+                                                <a href="#contact">
                                                     Get in Touch
-                                                </Link>
+                                                </a>
                                             </Button>
                                         </motion.li>
                                     </ul>
